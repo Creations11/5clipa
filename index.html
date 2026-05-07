@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5Clipa | Loan Application</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src *;">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0D0D0D;
+  --green: #1A7A4A;
+  --green-light: #25A063;
+  --gold: #C89B3C;
+  --cream: #F5F0E8;
+  --white: #FFFFFF;
+  --muted: #6B7280;
+  --border: #E5DDD0;
+  --danger: #C0392B;
+  --success: #1A7A4A;
+  --bg: #FAF7F2;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(26,122,74,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(200,155,60,0.06) 0%, transparent 50%);
+  min-height: 100vh;
+  padding: 30px 16px 60px;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.page-wrap {
+  width: 100%;
+  max-width: 680px;
+}
+
+/* ── TOP HEADER ─────────────────────────────── */
+.brand-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--ink);
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: var(--green);
+}
+
+.ref-pill {
+  background: var(--ink);
+  color: var(--gold);
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 100px;
+  letter-spacing: 1px;
+}
+
+/* ── HERO STRIP ─────────────────────────────── */
+.hero-strip {
+  background: var(--ink);
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-strip::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(26,122,74,0.2);
+}
+
+.hero-strip::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; left: 30%;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(200,155,60,0.12);
+}
+
+.hero-text h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.hero-text p {
+  color: rgba(255,255,255,0.55);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.hero-amount {
+  text-align: right;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-amount .big {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.hero-amount .label {
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 3px;
+}
+
+/* ── STATUS BADGE ───────────────────────────── */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.status-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-text.error { color: var(--danger); }
+.status-dot.error { background: var(--danger); animation: none; }
+
+/* ── CARD ───────────────────────────────────── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── FORM FIELDS ────────────────────────────── */
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 7px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  margin-bottom: 18px;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--green);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(26,122,74,0.1);
+}
+
+input.valid {
+  border-color: var(--success);
+  background: #F0FAF4;
+}
+
+input.invalid {
+  border-color: var(--danger);
+  background: #FDF2F2;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── FEE BREAKDOWN ──────────────────────────── */
+.breakdown {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 4px;
+}
+
+.break-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  font-size: 14px;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.break-row:last-child { border-bottom: none; }
+
+.break-row .val { font-weight: 600; color: var(--ink); }
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding: 14px 18px;
+  background: var(--ink);
+  border-radius: 12px;
+}
+
+.total-row .t-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--white);
+  font-size: 14px;
+}
+
+.total-row .t-amount {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: var(--gold);
+  font-size: 22px;
+}
+
+.locked-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* ── FILE UPLOAD ────────────────────────────── */
+.file-zone {
+  border: 2px dashed var(--border);
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-zone:hover, .file-zone.active {
+  border-color: var(--green);
+  background: #F0FAF4;
+}
+
+.file-icon { font-size: 28px; margin-bottom: 8px; }
+
+.file-text {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.file-list {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.file-chip {
+  background: var(--ink);
+  color: var(--white);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+/* ── SIGNATURE ──────────────────────────────── */
+.sig-box {
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  height: 180px;
+  background: var(--white);
+  position: relative;
+}
+
+.sig-placeholder {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--border);
+  font-size: 13px;
+  pointer-events: none;
+  font-style: italic;
+}
+
+canvas { width: 100%; height: 100%; }
+
+.sig-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.clear-btn {
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.clear-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ── CONSENT ────────────────────────────────── */
+.consent-box {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding: 18px;
+  background: var(--cream);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.consent-box input[type="checkbox"] {
+  width: 20px; height: 20px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.consent-box label {
+  text-transform: none;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+  margin-bottom: 0;
+}
+
+/* ── SUBMIT BUTTON ──────────────────────────── */
+.submit-btn {
+  width: 100%;
+  border: none;
+  background: var(--green);
+  color: var(--white);
+  padding: 18px;
+  border-radius: 16px;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: 20px;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::after {
+  content: '→';
+  margin-left: 10px;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.submit-btn:hover {
+  background: #145c38;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(26,122,74,0.3);
+}
+
+.submit-btn:hover::after { transform: translateX(4px); }
+
+.submit-btn:disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── LOADING ────────────────────────────────── */
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,13,13,0.88);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 99999;
+  gap: 18px;
+}
+
+.spinner {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top: 4px solid var(--gold);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  color: var(--white);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* ── FOOTER ─────────────────────────────────── */
+.footer {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.footer strong { color: var(--ink); }
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 600px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .hero-strip { flex-direction: column; align-items: flex-start; }
+  .hero-amount { text-align: left; }
+  .hero-amount .big { font-size: 32px; }
+  .card { padding: 22px; }
+  .brand-bar .logo { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Processing Application...</div>
+</div>
+
+<div class="page-wrap" id="appContent">
+
+  <!-- BRAND BAR -->
+  <div class="brand-bar">
+    <div class="logo">5<span>Clipa</span></div>
+    <div class="ref-pill" id="referenceNumber">--</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-strip">
+    <div class="hero-text">
+      <h1>Fast Loans.<br>Real People.</h1>
+      <p>Apply in minutes · Same-day payout</p>
+    </div>
+    <div class="hero-amount">
+      <div class="big">R500</div>
+      <div class="label">Loan Amount</div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-row">
+    <div class="status-dot" id="statusDot"></div>
+    <div class="status-text" id="statusText">Pending Review</div>
+  </div>
+
+  <!-- APPLICANT INFO -->
+  <div class="card">
+    <div class="card-title">Applicant Information</div>
+
+    <label>Full Legal Name</label>
+    <input type="text" id="fullname" placeholder="Name & Surname">
+
+    <label id="idLabel">South African ID Number</label>
+    <input type="text" id="idnum" maxlength="13" placeholder="13-digit ID Number">
+
+    <div class="grid-2">
+      <div>
+        <label>Phone Number</label>
+        <input type="tel" id="phone" placeholder="08XXXXXXXX">
+      </div>
+      <div>
+        <label>Payday / Repayment Date</label>
+        <input type="date" id="payday">
+      </div>
+    </div>
+
+    <label>Employer / Source of Income</label>
+    <input type="text" id="employer" placeholder="Employer or Uber / Self-employed">
+
+    <label>Net Monthly Income</label>
+    <input type="number" id="netIncome" placeholder="R (your take-home pay)">
+  </div>
+
+  <!-- FEE BREAKDOWN -->
+  <div class="card">
+    <div class="card-title">Loan Summary</div>
+
+    <div class="breakdown">
+      <div class="break-row">
+        <span>Principal Amount</span>
+        <span class="val">R 500.00</span>
+      </div>
+      <div class="break-row">
+        <span>Interest (5% per month)</span>
+        <span class="val">R 25.00</span>
+      </div>
+      <div class="break-row">
+        <span>Initiation Fee (once-off)</span>
+        <span class="val">R 75.00</span>
+      </div>
+      <div class="break-row">
+        <span>Monthly Service Fee</span>
+        <span class="val">R 50.00</span>
+      </div>
+    </div>
+
+    <div class="total-row">
+      <span class="t-label">Total Repayable</span>
+      <span class="t-amount">R 650.00</span>
+    </div>
+
+    <div class="locked-note">Loan term: 30 days · All fees NCR compliant</div>
+  </div>
+
+  <!-- BANKING -->
+  <div class="card">
+    <div class="card-title">Banking Details</div>
+
+    <div class="grid-2">
+      <div>
+        <label>Bank</label>
+        <select id="bank">
+          <option value="">Select Bank</option>
+          <option>Capitec</option>
+          <option>FNB</option>
+          <option>Absa</option>
+          <option>Standard Bank</option>
+          <option>Nedbank</option>
+          <option>TymeBank</option>
+          <option>African Bank</option>
+        </select>
+      </div>
+      <div>
+        <label>Account Number</label>
+        <input type="text" id="account" maxlength="13" placeholder="Account Number">
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS -->
+  <div class="card">
+    <div class="card-title">Supporting Documents</div>
+
+    <div class="file-zone" id="dropZone">
+      <input type="file" id="docs" hidden multiple accept=".pdf,.jpg,.jpeg,.png">
+      <div class="file-icon">📂</div>
+      <div class="file-text" id="fileText">Tap to upload ID, Payslip & Bank Statement</div>
+      <div class="file-list" id="fileList"></div>
+    </div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="card">
+    <div class="card-title">Digital Signature</div>
+
+    <div class="sig-box">
+      <canvas id="sigPad"></canvas>
+      <div class="sig-placeholder" id="sigPlaceholder">Sign here with your finger or mouse</div>
+    </div>
+
+    <div class="sig-actions">
+      <button class="clear-btn" onclick="clearSig()">Clear Signature</button>
+    </div>
+
+    <div class="consent-box">
+      <input type="checkbox" id="consent">
+      <label for="consent">
+        I confirm all information is true and accurate. I consent to identity, affordability and credit verification under the <strong>POPIA Act</strong> and <strong>National Credit Act 34 of 2005</strong>. I understand my total repayment of <strong>R650.00</strong> is due on my stated payday.
+      </label>
+    </div>
+
+    <button class="submit-btn" id="submitBtn">Sign & Submit Application</button>
+  </div>
+
+  <div class="footer">
+    <strong>5Clipa</strong> — a trading name of [Registered Company Name] (Pty) Ltd<br>
+    Registered Credit Provider · NCR Reg No: [NCR Reg No.] · NCA 34 of 2005<br>
+    Complaints: NCR 0860 627 627 · NCO 0861 662 837
+  </div>
+
+</div>
+
+<script>
+/* ── CONFIG ── Update this URL to your Google Apps Script endpoint */
+const API_URL = "https://script.google.com/macros/s/AKfycbx818G2HgT3-jR5qJ8CpgCvE5HzU1JL788M0T2Cm5hgXQhDtX4WEBQWxWyHaXN1YqCI/exec";
+
+/* ── REFERENCE ── */
+const reference = "5C-" + Math.floor(100000 + Math.random() * 900000);
+document.getElementById("referenceNumber").innerText = reference;
+
+/* ── DATE ── */
+const today = new Date().toISOString().split("T")[0];
+document.getElementById("payday").setAttribute("min", today);
+
+/* ── SIGNATURE PAD ── */
+const canvas = document.getElementById("sigPad");
+
+function resizeCanvas() {
+  const ratio = Math.max(window.devicePixelRatio || 1, 1);
+  canvas.width = canvas.offsetWidth * ratio;
+  canvas.height = canvas.offsetHeight * ratio;
+  canvas.getContext("2d").scale(ratio, ratio);
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+const pad = new SignaturePad(canvas, {
+  backgroundColor: "#ffffff",
+  penColor: "#0D0D0D",
+  minWidth: 1.5,
+  maxWidth: 3
+});
+
+pad.addEventListener("beginStroke", () => {
+  document.getElementById("sigPlaceholder").style.display = "none";
+});
+
+function clearSig() {
+  pad.clear();
+  document.getElementById("sigPlaceholder").style.display = "block";
+}
+
+/* ── HELPERS ── */
+function sanitize(v) { return String(v).replace(/[<>]/g, "").trim(); }
+
+/* ── SA ID VALIDATION ── */
+function luhnCheck(id) {
+  let sum = 0, alt = false;
+  for (let i = id.length - 1; i >= 0; i--) {
+    let n = parseInt(id.charAt(i), 10);
+    if (alt) { n *= 2; if (n > 9) n -= 9; }
+    sum += n; alt = !alt;
+  }
+  return sum % 10 === 0;
+}
+
+function validateSAID(id) {
+  if (!/^\d{13}$/.test(id)) return false;
+  const yy = parseInt(id.substring(0, 2));
+  const mm = parseInt(id.substring(2, 4));
+  const dd = parseInt(id.substring(4, 6));
+  const year = yy < 30 ? 2000 + yy : 1900 + yy;
+  const dob = new Date(year, mm - 1, dd);
+  if (dob.getFullYear() !== year || dob.getMonth() !== mm - 1 || dob.getDate() !== dd) return false;
+  return luhnCheck(id);
+}
+
+function validatePhone(p) { return /^0[6-8][0-9]{8}$/.test(p); }
+function validateAccount(a) { return /^\d{8,13}$/.test(a); }
+
+/* ── AFFORDABILITY ── */
+function checkAffordability() {
+  const income = parseFloat(document.getElementById("netIncome").value) || 0;
+  const dot = document.getElementById("statusDot");
+  const txt = document.getElementById("statusText");
+
+  if (income > 0 && 650 > income * 0.30) {
+    dot.className = "status-dot error";
+    txt.className = "status-text error";
+    txt.innerText = "Affordability Exceeded — Income Too Low";
+  } else {
+    dot.className = "status-dot";
+    txt.className = "status-text";
+    txt.innerText = "Pending Review";
+  }
+}
+
+document.getElementById("netIncome").addEventListener("input", checkAffordability);
+
+/* ── ID FIELD FEEDBACK ── */
+document.getElementById("fullname").addEventListener("input", function () {
+  this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
+});
+
+document.getElementById("idnum").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "");
+  const label = document.getElementById("idLabel");
+  if (this.value.length === 13) {
+    if (validateSAID(this.value)) {
+      label.innerText = "✓ Valid South African ID";
+      label.style.color = "var(--success)";
+      this.classList.add("valid"); this.classList.remove("invalid");
+    } else {
+      label.innerText = "✗ Invalid ID Number";
+      label.style.color = "var(--danger)";
+      this.classList.add("invalid"); this.classList.remove("valid");
+    }
+  } else {
+    label.innerText = "South African ID Number";
+    label.style.color = "";
+    this.classList.remove("valid", "invalid");
+  }
+});
+
+document.getElementById("account").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "");
+});
+
+/* ── FILE UPLOAD ── */
+const fileInput = document.getElementById("docs");
+const dropZone = document.getElementById("dropZone");
+
+dropZone.addEventListener("click", () => fileInput.click());
+dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("active"); });
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("active"));
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropZone.classList.remove("active");
+  fileInput.files = e.dataTransfer.files;
+  updateFileDisplay();
+});
+fileInput.addEventListener("change", updateFileDisplay);
+
+function updateFileDisplay() {
+  const files = [...fileInput.files];
+  document.getElementById("fileText").innerText = files.length ? `${files.length} file(s) selected` : "Tap to upload ID, Payslip & Bank Statement";
+  const list = document.getElementById("fileList");
+  list.innerHTML = files.map(f => `<span class="file-chip">📄 ${f.name}</span>`).join("");
+}
+
+/* ── RATE LIMIT ── */
+function checkCooldown() {
+  const last = localStorage.getItem("5clipa_last");
+  if (last && Date.now() - parseInt(last) < 300000) {
+    alert("Please wait 5 minutes before submitting another application.");
+    return false;
+  }
+  return true;
+}
+
+/* ── FILE TO BASE64 ── */
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve({ name: file.name, mimeType: file.type, data: r.result });
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+/* ── PDF EXPORT ── */
+async function generatePDF() {
+  const idField = document.getElementById("idnum");
+  const original = idField.value;
+  idField.value = original.slice(0, 6) + "******" + original.slice(-1);
+  await html2pdf().from(document.getElementById("appContent")).set({
+    margin: 0.4,
+    filename: `${reference}_5Clipa_Agreement.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 3 },
+    jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+  }).save();
+  idField.value = original;
+}
+
+/* ── SUBMIT ── */
+document.getElementById("submitBtn").addEventListener("click", submitApplication);
+
+async function submitApplication() {
+  if (!checkCooldown()) return;
+
+  const fullname = sanitize(document.getElementById("fullname").value);
+  const id = sanitize(document.getElementById("idnum").value);
+  const phone = sanitize(document.getElementById("phone").value);
+  const payday = sanitize(document.getElementById("payday").value);
+  const employer = sanitize(document.getElementById("employer").value);
+  const income = parseFloat(document.getElementById("netIncome").value) || 0;
+  const bank = sanitize(document.getElementById("bank").value);
+  const account = sanitize(document.getElementById("account").value);
+
+  if (!fullname || !id || !phone || !payday || !employer || !bank || !account) {
+    alert("Please complete all required fields."); return;
+  }
+  if (!validateSAID(id)) { alert("Invalid South African ID number."); return; }
+  if (!validatePhone(phone)) { alert("Invalid South African phone number."); return; }
+  if (!validateAccount(account)) { alert("Invalid account number."); return; }
+  if (income > 0 && 650 > income * 0.30) { alert("Application exceeds affordability limit (30% of income)."); return; }
+  if (fileInput.files.length < 1) { alert("Please upload at least one supporting document."); return; }
+  if (pad.isEmpty()) { alert("Please provide your signature."); return; }
+  if (!document.getElementById("consent").checked) { alert("Please accept the consent declaration."); return; }
+
+  document.getElementById("loadingOverlay").style.display = "flex";
+  document.getElementById("submitBtn").disabled = true;
+
+  try {
+    const files = [];
+    for (const file of fileInput.files) {
+      files.push(await fileToBase64(file));
+    }
+
+    const payload = {
+      timestamp: new Date().toISOString(),
+      reference,
+      fullname,
+      id,
+      phone,
+      employer,
+      income,
+      loanAmount: 500,
+      totalRepayment: 650,
+      payday,
+      bank,
+      account,
+      signature: pad.toDataURL(),
+      files
+    };
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error || "Submission failed");
+
+    await generatePDF();
+    localStorage.setItem("5clipa_last", Date.now());
+    alert("Application submitted successfully.\nReference: " + reference);
+    location.reload();
+
+  } catch (error) {
+    console.error(error);
+    // Still generate PDF even if API fails
+    await generatePDF().catch(() => {});
+    alert("Application saved locally.\nReference: " + reference + "\n\nNote: Update the API_URL in the code to connect to your backend.");
+    document.getElementById("submitBtn").disabled = false;
+    document.getElementById("loadingOverlay").style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
