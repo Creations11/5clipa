@@ -1,614 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5Clipa | Loan Application</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src *;">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>5Clipa • Fast Loans</title>
+<meta http-equiv="Content-Security-Policy"
+content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src *;">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-:root {
-  --ink: #0D0D0D;
-  --green: #1A7A4A;
-  --green-light: #25A063;
-  --gold: #C89B3C;
-  --cream: #F5F0E8;
-  --white: #FFFFFF;
-  --muted: #6B7280;
-  --border: #E5DDD0;
-  --danger: #C0392B;
-  --success: #1A7A4A;
-  --bg: #FAF7F2;
+:root{
+  --bg:#060608;
+  --card:#121219;
+  --card2:#1A1A22;
+  --line:rgba(255,255,255,.08);
+  --green:#00C16A;
+  --gold:#FFB800;
+  --text:#F3F4F6;
+  --muted:#7E7E95;
+  --danger:#FF4D4D;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+::selection{ background:var(--green); color:#000; }
 
-body {
-  background: var(--bg);
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(26,122,74,0.06) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(200,155,60,0.06) 0%, transparent 50%);
-  min-height: 100vh;
-  padding: 30px 16px 60px;
-  font-family: 'DM Sans', sans-serif;
-  display: flex;
-  justify-content: center;
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  overflow-x:hidden;
 }
 
-.page-wrap {
-  width: 100%;
-  max-width: 680px;
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top right,rgba(0,193,106,.12),transparent 30%),
+    radial-gradient(circle at bottom left,rgba(255,184,0,.08),transparent 30%);
+  pointer-events:none;
+  z-index:0;
 }
 
-/* ── TOP HEADER ─────────────────────────────── */
-.brand-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
+/* NOISE */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
 }
 
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 32px;
-  color: var(--ink);
-  letter-spacing: -1px;
+.app{
+  max-width:760px;
+  margin:auto;
+  padding:0 20px 80px;
+  position:relative;
+  z-index:2;
 }
 
-.logo span {
-  color: var(--green);
+/* NAV */
+.nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(6,6,8,.9);
+  backdrop-filter:blur(20px);
+  padding:16px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+  margin-bottom:44px;
 }
 
-.ref-pill {
-  background: var(--ink);
-  color: var(--gold);
-  font-family: monospace;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 8px 14px;
-  border-radius: 100px;
-  letter-spacing: 1px;
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:42px;
+  letter-spacing:2px;
+  line-height:1;
+}
+.logo span{ color:var(--green); }
+
+.ref{
+  padding:10px 16px;
+  border-radius:10px;
+  background:rgba(0,193,106,.08);
+  border:1px solid rgba(0,193,106,.2);
+  color:var(--green);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:2px;
+  font-family:'Outfit',monospace;
 }
 
-/* ── HERO STRIP ─────────────────────────────── */
-.hero-strip {
-  background: var(--ink);
-  border-radius: 20px;
-  padding: 28px 32px;
-  margin-bottom: 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  overflow: hidden;
-  position: relative;
+/* HERO */
+.hero{ margin-bottom:44px; }
+
+.eyebrow{
+  color:var(--green);
+  text-transform:uppercase;
+  letter-spacing:4px;
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.eyebrow::before{ content:''; width:28px; height:2px; background:var(--green); }
+
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(62px,12vw,110px);
+  line-height:.9;
+  letter-spacing:1px;
+}
+.hero h1 span{ color:var(--green); display:block; }
+
+.hero p{
+  color:var(--muted);
+  margin-top:20px;
+  max-width:500px;
+  line-height:1.8;
+  font-size:15px;
 }
 
-.hero-strip::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 160px; height: 160px;
-  border-radius: 50%;
-  background: rgba(26,122,74,0.2);
+/* PROGRESS */
+.progress-wrap{ margin:0 0 32px; }
+
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+.progress-top span{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+#progressPct{ color:var(--green); }
+
+.progress{
+  height:6px;
+  background:var(--card2);
+  border-radius:100px;
+  overflow:hidden;
+}
+.progress-fill{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,var(--green),#00FF95);
+  border-radius:100px;
+  transition:width .4s cubic-bezier(.4,0,.2,1);
 }
 
-.hero-strip::after {
-  content: '';
-  position: absolute;
-  bottom: -50px; left: 30%;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: rgba(200,155,60,0.12);
+/* CARD */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:32px;
+  margin-bottom:18px;
+  position:relative;
+  overflow:hidden;
+  animation:fadeUp .5s ease both;
 }
 
-.hero-text h1 {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 22px;
-  color: var(--white);
-  line-height: 1.3;
+.card::before{
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,193,106,.25),transparent);
 }
 
-.hero-text p {
-  color: rgba(255,255,255,0.55);
-  font-size: 13px;
-  margin-top: 5px;
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.card:nth-child(1){ animation-delay:.05s; }
+.card:nth-child(2){ animation-delay:.1s; }
+.card:nth-child(3){ animation-delay:.15s; }
+.card:nth-child(4){ animation-delay:.2s; }
+.card:nth-child(5){ animation-delay:.25s; }
+.card:nth-child(6){ animation-delay:.3s; }
+
+.card-number{
+  position:absolute;
+  bottom:-10px; right:20px;
+  font-size:90px;
+  opacity:.04;
+  font-family:'Bebas Neue',sans-serif;
+  pointer-events:none;
+  line-height:1;
+  letter-spacing:3px;
 }
 
-.hero-amount {
-  text-align: right;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+.section-title{
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--green);
+  margin-bottom:26px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-title::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+/* FORM */
+label{
+  display:block;
+  margin-bottom:8px;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:700;
 }
 
-.hero-amount .big {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 40px;
-  color: var(--gold);
-  line-height: 1;
+input, select{
+  width:100%;
+  padding:15px 18px;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  color:var(--text);
+  margin-bottom:18px;
+  font-size:15px;
+  font-family:'Outfit',sans-serif;
+  transition:all .2s;
+  -webkit-appearance:none;
 }
 
-.hero-amount .label {
-  color: rgba(255,255,255,0.5);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 3px;
+input::placeholder{ color:var(--muted); }
+
+input:focus, select:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(0,193,106,.1);
+  background:rgba(0,193,106,.04);
 }
 
-/* ── STATUS BADGE ───────────────────────────── */
-.status-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
+select option{ background:var(--card2); color:var(--text); }
+
+input.valid{ border-color:var(--green); background:rgba(0,193,106,.06); }
+input.invalid{ border-color:var(--danger); background:rgba(255,77,77,.06); }
+
+.field-hint{
+  font-size:11px;
+  font-weight:600;
+  margin-top:-12px;
+  margin-bottom:14px;
+  display:none;
+  letter-spacing:.3px;
+}
+.field-hint.show{ display:block; }
+.field-hint.ok{ color:var(--green); }
+.field-hint.err{ color:var(--danger); }
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
 
-.status-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: pulse 2s infinite;
+/* LOAN SLIDER CARD */
+.loan-display{
+  text-align:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:100px;
+  color:var(--gold);
+  line-height:1;
+  letter-spacing:2px;
+  margin-bottom:4px;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+.loan-sub{
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:22px;
 }
 
-.status-text {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+input[type="range"]{
+  -webkit-appearance:none;
+  width:100%;
+  height:6px;
+  background:var(--card2);
+  border-radius:100px;
+  padding:0;
+  border:none;
+  margin-bottom:0;
+  cursor:pointer;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:22px; height:22px;
+  border-radius:50%;
+  background:var(--green);
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(0,193,106,.5);
+  transition:box-shadow .2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover{
+  box-shadow:0 0 20px rgba(0,193,106,.8);
 }
 
-.status-text.error { color: var(--danger); }
-.status-dot.error { background: var(--danger); animation: none; }
-
-/* ── CARD ───────────────────────────────────── */
-.card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 28px;
-  margin-bottom: 16px;
+.range-labels{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  font-size:11px;
+  color:var(--muted);
 }
 
-.card-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--green);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 22px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.breakdown{
+  margin-top:26px;
+  display:grid;
+  gap:10px;
 }
 
-.card-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
+.break-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:13px 18px;
+  background:var(--card2);
+  border-radius:12px;
+  border:1px solid var(--line);
+  font-size:14px;
+}
+.break-row strong{ font-weight:600; color:var(--text); }
+
+.break-total{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 20px;
+  background:var(--green);
+  border-radius:14px;
+  margin-top:4px;
+}
+.break-total span{ font-family:'Bebas Neue',sans-serif; font-size:13px; color:#000; letter-spacing:1px; }
+.break-total strong{ font-family:'Bebas Neue',sans-serif; font-size:26px; color:#000; letter-spacing:2px; }
+
+/* STATUS */
+.status-bar{
+  padding:16px 20px;
+  border-radius:14px;
+  background:var(--card);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
 }
 
-/* ── FORM FIELDS ────────────────────────────── */
-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 7px;
+.dot{
+  width:10px; height:10px;
+  border-radius:50%;
+  background:var(--gold);
+  flex-shrink:0;
+  position:relative;
+}
+.dot::after{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  background:rgba(255,184,0,.3);
+  animation:ripple 1.8s ease-out infinite;
+}
+.dot.good{ background:var(--green); }
+.dot.good::after{ background:rgba(0,193,106,.3); }
+.dot.bad{ background:var(--danger); }
+.dot.bad::after{ display:none; }
+
+@keyframes ripple{
+  0%{ transform:scale(.8); opacity:1; }
+  100%{ transform:scale(2.4); opacity:0; }
 }
 
-input, select {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  font-size: 15px;
-  font-family: 'DM Sans', sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  margin-bottom: 18px;
-  transition: all 0.2s;
-  -webkit-appearance: none;
+.status-text{
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.status-text.danger{ color:var(--danger); }
+.status-text.good{ color:var(--green); }
+
+/* FILE UPLOAD */
+.upload{
+  border:2px dashed rgba(0,193,106,.25);
+  border-radius:18px;
+  padding:40px 24px;
+  text-align:center;
+  cursor:pointer;
+  background:rgba(0,193,106,.03);
+  transition:all .2s;
+}
+.upload:hover, .upload.active{
+  border-color:var(--green);
+  background:rgba(0,193,106,.07);
+}
+.upload-icon{ font-size:38px; margin-bottom:12px; }
+.upload h3{ font-weight:600; font-size:16px; margin-bottom:6px; }
+.upload p{ color:var(--muted); font-size:13px; }
+
+.files{
+  margin-top:16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
+.file-chip{
+  background:rgba(0,193,106,.1);
+  color:var(--green);
+  border:1px solid rgba(0,193,106,.2);
+  border-radius:100px;
+  padding:7px 14px;
+  font-size:12px;
+  font-weight:600;
 }
 
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--green);
-  background: var(--white);
-  box-shadow: 0 0 0 3px rgba(26,122,74,0.1);
+/* SIGNATURE */
+.sig-wrap{
+  height:220px;
+  border-radius:18px;
+  overflow:hidden;
+  background:var(--card2);
+  border:1px solid var(--line);
+  position:relative;
+  transition:border-color .2s;
+}
+.sig-wrap:focus-within{ border-color:var(--green); }
+
+canvas{ width:100%; height:100%; display:block; }
+
+.sig-placeholder{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  color:var(--muted);
+  pointer-events:none;
+}
+.sig-placeholder .icon{ font-size:28px; margin-bottom:8px; opacity:.4; }
+.sig-placeholder p{ font-size:13px; }
+
+.ghost-btn{
+  margin-top:12px;
+  background:none;
+  border:1px solid var(--line);
+  color:var(--muted);
+  padding:9px 18px;
+  border-radius:9px;
+  font-family:'Outfit',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .2s;
+}
+.ghost-btn:hover{ border-color:var(--danger); color:var(--danger); }
+
+/* CONSENT */
+.consent-wrap{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  margin-top:22px;
+  padding:20px;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+.consent-wrap input[type="checkbox"]{
+  width:20px; height:20px;
+  accent-color:var(--green);
+  flex-shrink:0;
+  margin-top:3px;
+  cursor:pointer;
+  background:var(--card2);
+  border:none;
+  margin-bottom:0;
+  padding:0;
+}
+.consent-wrap label{
+  text-transform:none;
+  letter-spacing:0;
+  font-size:13px;
+  line-height:1.8;
+  font-weight:400;
+  color:var(--muted);
+  margin-bottom:0;
+  cursor:pointer;
+}
+.consent-wrap label strong{ color:var(--text); }
+
+/* SUBMIT */
+.submit-btn{
+  width:100%;
+  border:none;
+  padding:22px;
+  margin-top:26px;
+  border-radius:16px;
+  background:var(--green);
+  color:#000;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px;
+  letter-spacing:3px;
+  cursor:pointer;
+  transition:all .25s;
+  position:relative;
+  overflow:hidden;
+}
+.submit-btn::before{
+  content:'';
+  position:absolute;
+  top:0; left:-100%;
+  width:100%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transition:left .5s;
+}
+.submit-btn:hover::before{ left:100%; }
+.submit-btn:hover{
+  background:#00d975;
+  transform:translateY(-2px);
+  box-shadow:0 0 40px rgba(0,193,106,.45);
+}
+.submit-btn:disabled{
+  background:var(--card2);
+  color:var(--muted);
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
 }
 
-input.valid {
-  border-color: var(--success);
-  background: #F0FAF4;
+/* LOADING */
+#loadingOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(6,6,8,.96);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:99999;
+  gap:20px;
+}
+.loader-ring{
+  width:60px; height:60px;
+  border-radius:50%;
+  border:3px solid rgba(255,255,255,.06);
+  border-top:3px solid var(--green);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.loader-label{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;
+  letter-spacing:4px;
+  color:var(--muted);
 }
 
-input.invalid {
-  border-color: var(--danger);
-  background: #FDF2F2;
+/* SUCCESS MODAL */
+#successModal{
+  position:fixed;
+  inset:0;
+  background:rgba(6,6,8,.96);
+  z-index:99998;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+  padding:24px;
+}
+#successModal h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(56px,12vw,90px);
+  line-height:.95;
+  margin-bottom:16px;
+}
+#successModal h2 span{ color:var(--green); }
+#successModal p{ color:var(--muted); margin-bottom:28px; max-width:480px; line-height:1.8; }
+
+.ref-big{
+  background:rgba(0,193,106,.1);
+  color:var(--green);
+  border:1px solid rgba(0,193,106,.2);
+  padding:18px 32px;
+  border-radius:16px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;
+  letter-spacing:4px;
+  margin-bottom:28px;
 }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+.modal-actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+
+.action-btn{
+  border:none;
+  padding:14px 24px;
+  border-radius:12px;
+  font-family:'Outfit',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  transition:all .2s;
 }
+.action-btn.primary{ background:var(--green); color:#000; }
+.action-btn.primary:hover{ background:#00d975; }
+.action-btn.outline{ background:none; border:1px solid var(--line); color:var(--muted); }
+.action-btn.outline:hover{ border-color:var(--green); color:var(--green); }
 
-/* ── FEE BREAKDOWN ──────────────────────────── */
-.breakdown {
-  background: var(--cream);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  margin-top: 4px;
+/* FOOTER */
+.footer{
+  text-align:center;
+  padding:44px 0 20px;
+  color:rgba(255,255,255,.2);
+  line-height:2.2;
+  font-size:11px;
+  letter-spacing:.5px;
 }
+.footer strong{ color:rgba(0,193,106,.5); }
+.footer a{ color:rgba(0,193,106,.4); text-decoration:none; }
 
-.break-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 7px 0;
-  font-size: 14px;
-  color: var(--muted);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-
-.break-row:last-child { border-bottom: none; }
-
-.break-row .val { font-weight: 600; color: var(--ink); }
-
-.total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 14px;
-  padding: 14px 18px;
-  background: var(--ink);
-  border-radius: 12px;
-}
-
-.total-row .t-label {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  color: var(--white);
-  font-size: 14px;
-}
-
-.total-row .t-amount {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  color: var(--gold);
-  font-size: 22px;
-}
-
-.locked-note {
-  text-align: center;
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 10px;
-  font-style: italic;
-}
-
-/* ── FILE UPLOAD ────────────────────────────── */
-.file-zone {
-  border: 2px dashed var(--border);
-  background: var(--bg);
-  border-radius: 16px;
-  padding: 28px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.file-zone:hover, .file-zone.active {
-  border-color: var(--green);
-  background: #F0FAF4;
-}
-
-.file-icon { font-size: 28px; margin-bottom: 8px; }
-
-.file-text {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.file-list {
-  margin-top: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
-
-.file-chip {
-  background: var(--ink);
-  color: var(--white);
-  font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 100px;
-  font-weight: 500;
-}
-
-/* ── SIGNATURE ──────────────────────────────── */
-.sig-box {
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-  height: 180px;
-  background: var(--white);
-  position: relative;
-}
-
-.sig-placeholder {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--border);
-  font-size: 13px;
-  pointer-events: none;
-  font-style: italic;
-}
-
-canvas { width: 100%; height: 100%; }
-
-.sig-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.clear-btn {
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 12px;
-  padding: 6px 14px;
-  border-radius: 100px;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s;
-}
-
-.clear-btn:hover { border-color: var(--danger); color: var(--danger); }
-
-/* ── CONSENT ────────────────────────────────── */
-.consent-box {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  margin-top: 20px;
-  padding: 18px;
-  background: var(--cream);
-  border-radius: 14px;
-  border: 1px solid var(--border);
-}
-
-.consent-box input[type="checkbox"] {
-  width: 20px; height: 20px;
-  margin: 2px 0 0;
-  flex-shrink: 0;
-  accent-color: var(--green);
-  cursor: pointer;
-}
-
-.consent-box label {
-  text-transform: none;
-  font-size: 13px;
-  line-height: 1.6;
-  font-weight: 400;
-  color: var(--muted);
-  letter-spacing: 0;
-  margin-bottom: 0;
-}
-
-/* ── SUBMIT BUTTON ──────────────────────────── */
-.submit-btn {
-  width: 100%;
-  border: none;
-  background: var(--green);
-  color: var(--white);
-  padding: 18px;
-  border-radius: 16px;
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.25s;
-  margin-top: 20px;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-}
-
-.submit-btn::after {
-  content: '→';
-  margin-left: 10px;
-  transition: transform 0.2s;
-  display: inline-block;
-}
-
-.submit-btn:hover {
-  background: #145c38;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(26,122,74,0.3);
-}
-
-.submit-btn:hover::after { transform: translateX(4px); }
-
-.submit-btn:disabled {
-  background: var(--border);
-  color: var(--muted);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* ── LOADING ────────────────────────────────── */
-#loadingOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(13,13,13,0.88);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 99999;
-  gap: 18px;
-}
-
-.spinner {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  border: 4px solid rgba(255,255,255,0.1);
-  border-top: 4px solid var(--gold);
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loading-text {
-  color: var(--white);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  letter-spacing: 1px;
-}
-
-/* ── FOOTER ─────────────────────────────────── */
-.footer {
-  text-align: center;
-  margin-top: 28px;
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.footer strong { color: var(--ink); }
-
-/* ── RESPONSIVE ─────────────────────────────── */
-@media (max-width: 600px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .hero-strip { flex-direction: column; align-items: flex-start; }
-  .hero-amount { text-align: left; }
-  .hero-amount .big { font-size: 32px; }
-  .card { padding: 22px; }
-  .brand-bar .logo { font-size: 26px; }
+@media(max-width:600px){
+  .grid{ grid-template-columns:1fr; }
+  .loan-display{ font-size:72px; }
+  .card{ padding:24px; }
 }
 </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-text">Processing Application...</div>
+  <div class="loader-ring"></div>
+  <div class="loader-label">Submitting Application</div>
 </div>
 
-<div class="page-wrap" id="appContent">
-
-  <!-- BRAND BAR -->
-  <div class="brand-bar">
-    <div class="logo">5<span>Clipa</span></div>
-    <div class="ref-pill" id="referenceNumber">--</div>
+<!-- SUCCESS MODAL -->
+<div id="successModal">
+  <h2>Application<br><span>Submitted!</span></h2>
+  <p>Your application has been received and is under review. Save your reference number below.</p>
+  <div class="ref-big" id="successRef"></div>
+  <div class="modal-actions">
+    <button class="action-btn primary" id="downloadPdfBtn">Download PDF Copy</button>
+    <button class="action-btn outline" onclick="location.reload()">New Application</button>
   </div>
+</div>
+
+<div class="app" id="appContent">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="logo">5<span>Clipa</span></div>
+    <div class="ref" id="refTag">Loading...</div>
+  </nav>
 
   <!-- HERO -->
-  <div class="hero-strip">
-    <div class="hero-text">
-      <h1>Fast Loans.<br>Real People.</h1>
-      <p>Apply in minutes · Same-day payout</p>
+  <div class="hero">
+    <div class="eyebrow">NCR Compliant · Fast Payout · Secure</div>
+    <h1>Fast Cash.<span>Right Now.</span></h1>
+    <p>Apply in under 3 minutes. Same-day payout. South Africa's most straightforward short-term loan — built for real people.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>Application Progress</span>
+      <span id="progressPct">0%</span>
     </div>
-    <div class="hero-amount">
-      <div class="big">R500</div>
-      <div class="label">Loan Amount</div>
+    <div class="progress">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- LOAN AMOUNT -->
+  <div class="card">
+    <div class="card-number">00</div>
+    <div class="section-title">Loan Amount</div>
+
+    <div class="loan-display" id="loanDisplay">R500</div>
+    <div class="loan-sub">Drag to adjust</div>
+
+    <input type="range" min="500" max="5000" step="100" value="500" id="loanSlider">
+    <div class="range-labels"><span>R500</span><span>R5,000</span></div>
+
+    <div class="breakdown">
+      <div class="break-row"><span>Interest (5% per month)</span><strong id="iF">R25</strong></div>
+      <div class="break-row"><span>Initiation Fee</span><strong id="nF">R75</strong></div>
+      <div class="break-row"><span>Service Fee</span><strong>R50</strong></div>
+      <div class="break-total">
+        <span>Total Repayment</span>
+        <strong id="rT">R650</strong>
+      </div>
     </div>
   </div>
 
   <!-- STATUS -->
-  <div class="status-row">
-    <div class="status-dot" id="statusDot"></div>
+  <div class="status-bar">
+    <div class="dot" id="statusDot"></div>
     <div class="status-text" id="statusText">Pending Review</div>
   </div>
 
-  <!-- APPLICANT INFO -->
+  <!-- PERSONAL -->
   <div class="card">
-    <div class="card-title">Applicant Information</div>
+    <div class="card-number">01</div>
+    <div class="section-title">Personal Details</div>
 
     <label>Full Legal Name</label>
-    <input type="text" id="fullname" placeholder="Name & Surname">
+    <input type="text" id="fullname" placeholder="Name & Surname" autocomplete="name">
 
     <label id="idLabel">South African ID Number</label>
     <input type="text" id="idnum" maxlength="13" placeholder="13-digit ID Number">
+    <div class="field-hint" id="idHint"></div>
 
-    <div class="grid-2">
+    <div class="grid">
       <div>
         <label>Phone Number</label>
         <input type="tel" id="phone" placeholder="08XXXXXXXX">
       </div>
       <div>
-        <label>Payday / Repayment Date</label>
+        <label>Repayment Date</label>
         <input type="date" id="payday">
       </div>
     </div>
 
-    <label>Employer / Source of Income</label>
-    <input type="text" id="employer" placeholder="Employer or Uber / Self-employed">
+    <label>Employer / Income Source</label>
+    <input type="text" id="employer" placeholder="Company, Uber, self-employed...">
 
     <label>Net Monthly Income</label>
-    <input type="number" id="netIncome" placeholder="R (your take-home pay)">
-  </div>
-
-  <!-- FEE BREAKDOWN -->
-  <div class="card">
-    <div class="card-title">Loan Summary</div>
-
-    <div class="breakdown">
-      <div class="break-row">
-        <span>Principal Amount</span>
-        <span class="val">R 500.00</span>
-      </div>
-      <div class="break-row">
-        <span>Interest (5% per month)</span>
-        <span class="val">R 25.00</span>
-      </div>
-      <div class="break-row">
-        <span>Initiation Fee (once-off)</span>
-        <span class="val">R 75.00</span>
-      </div>
-      <div class="break-row">
-        <span>Monthly Service Fee</span>
-        <span class="val">R 50.00</span>
-      </div>
-    </div>
-
-    <div class="total-row">
-      <span class="t-label">Total Repayable</span>
-      <span class="t-amount">R 650.00</span>
-    </div>
-
-    <div class="locked-note">Loan term: 30 days · All fees NCR compliant</div>
+    <input type="number" id="income" placeholder="R (your take-home pay)">
   </div>
 
   <!-- BANKING -->
   <div class="card">
-    <div class="card-title">Banking Details</div>
+    <div class="card-number">02</div>
+    <div class="section-title">Banking Details</div>
 
-    <div class="grid-2">
+    <div class="grid">
       <div>
         <label>Bank</label>
         <select id="bank">
@@ -631,60 +781,188 @@ canvas { width: 100%; height: 100%; }
 
   <!-- DOCUMENTS -->
   <div class="card">
-    <div class="card-title">Supporting Documents</div>
+    <div class="card-number">03</div>
+    <div class="section-title">Supporting Documents</div>
 
-    <div class="file-zone" id="dropZone">
-      <input type="file" id="docs" hidden multiple accept=".pdf,.jpg,.jpeg,.png">
-      <div class="file-icon">📂</div>
-      <div class="file-text" id="fileText">Tap to upload ID, Payslip & Bank Statement</div>
-      <div class="file-list" id="fileList"></div>
+    <div class="upload" id="uploadBox">
+      <input type="file" hidden multiple id="docs" accept=".pdf,.png,.jpg,.jpeg">
+      <div class="upload-icon">📁</div>
+      <h3>Upload Documents</h3>
+      <p style="margin-top:8px;">ID · Payslip · 3 Months Bank Statements</p>
+      <p style="margin-top:6px;font-size:11px;color:rgba(126,126,149,.6);">PDF, JPG or PNG · Max 5MB each</p>
+      <div class="files" id="fileChips"></div>
     </div>
   </div>
 
   <!-- SIGNATURE -->
   <div class="card">
-    <div class="card-title">Digital Signature</div>
+    <div class="card-number">04</div>
+    <div class="section-title">Digital Signature</div>
 
-    <div class="sig-box">
+    <div class="sig-wrap" id="sigWrap">
       <canvas id="sigPad"></canvas>
-      <div class="sig-placeholder" id="sigPlaceholder">Sign here with your finger or mouse</div>
+      <div class="sig-placeholder" id="sigHint">
+        <div class="icon">✍️</div>
+        <p>Sign with your finger or mouse</p>
+      </div>
     </div>
 
-    <div class="sig-actions">
-      <button class="clear-btn" onclick="clearSig()">Clear Signature</button>
-    </div>
+    <button class="ghost-btn" onclick="clearSig()">✕ Clear Signature</button>
 
-    <div class="consent-box">
+    <div class="consent-wrap">
       <input type="checkbox" id="consent">
       <label for="consent">
-        I confirm all information is true and accurate. I consent to identity, affordability and credit verification under the <strong>POPIA Act</strong> and <strong>National Credit Act 34 of 2005</strong>. I understand my total repayment of <strong>R650.00</strong> is due on my stated payday.
+        I confirm all information is true and accurate. I consent to identity, affordability and credit verification under the <strong>POPIA Act</strong> and <strong>National Credit Act 34 of 2005</strong>. I understand my total repayment is due on the date I have selected above.
       </label>
     </div>
 
-    <button class="submit-btn" id="submitBtn">Sign & Submit Application</button>
+    <button class="submit-btn" id="submitBtn">Submit Application →</button>
   </div>
 
   <div class="footer">
-    <strong>5Clipa</strong> — a trading name of [Registered Company Name] (Pty) Ltd<br>
+    <strong>5CLIPA</strong><br>
+    A trading name of [Registered Company Name] (Pty) Ltd<br>
     Registered Credit Provider · NCR Reg No: [NCR Reg No.] · NCA 34 of 2005<br>
-    Complaints: NCR 0860 627 627 · NCO 0861 662 837
+    NCR Complaints: <a href="tel:0860627627">0860 627 627</a> · NCO: <a href="tel:0861662837">0861 662 837</a>
   </div>
 
 </div>
 
 <script>
-/* ── CONFIG ── Update this URL to your Google Apps Script endpoint */
+/* ── CONFIG ───────────────────────────────── */
 const API_URL = "https://script.google.com/macros/s/AKfycbx818G2HgT3-jR5qJ8CpgCvE5HzU1JL788M0T2Cm5hgXQhDtX4WEBQWxWyHaXN1YqCI/exec";
 
 /* ── REFERENCE ── */
 const reference = "5C-" + Math.floor(100000 + Math.random() * 900000);
-document.getElementById("referenceNumber").innerText = reference;
+document.getElementById("refTag").innerText = reference;
+document.getElementById("payday").min = new Date().toISOString().split("T")[0];
 
-/* ── DATE ── */
-const today = new Date().toISOString().split("T")[0];
-document.getElementById("payday").setAttribute("min", today);
+/* ── LOAN CALCULATION ── */
+const slider = document.getElementById("loanSlider");
 
-/* ── SIGNATURE PAD ── */
+function calcLoan(amount) {
+  const interest = amount * 0.05;
+  const initiation = amount <= 1000 ? 75 : Math.min(75 + (amount - 1000) * 0.1, 1050);
+  const service = 50;
+  const total = amount + interest + initiation + service;
+
+  document.getElementById("loanDisplay").innerText = "R" + amount.toLocaleString("en-ZA");
+  document.getElementById("iF").innerText = "R" + interest.toFixed(0);
+  document.getElementById("nF").innerText = "R" + initiation.toFixed(0);
+  document.getElementById("rT").innerText = "R" + total.toLocaleString("en-ZA", { minimumFractionDigits: 0 });
+  return total;
+}
+
+slider.addEventListener("input", () => { calcLoan(+slider.value); checkAffordability(); });
+calcLoan(500);
+
+/* ── AFFORDABILITY ── */
+function checkAffordability() {
+  const income = parseFloat(document.getElementById("income").value) || 0;
+  const total = calcLoan(+slider.value);
+  const dot = document.getElementById("statusDot");
+  const txt = document.getElementById("statusText");
+
+  if (income > 0 && total > income * 0.30) {
+    dot.className = "dot bad";
+    txt.className = "status-text danger";
+    txt.innerText = "Affordability Exceeded";
+  } else if (income > 0) {
+    dot.className = "dot good";
+    txt.className = "status-text good";
+    txt.innerText = "Eligible For Review";
+  } else {
+    dot.className = "dot";
+    txt.className = "status-text";
+    txt.innerText = "Pending Review";
+  }
+}
+
+document.getElementById("income").addEventListener("input", checkAffordability);
+
+/* ── PROGRESS ── */
+const trackable = ["fullname","idnum","phone","payday","employer","income","bank","account","consent"];
+
+function updateProgress() {
+  let filled = 0;
+  trackable.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.type === "checkbox") { if (el.checked) filled++; }
+    else if (el.value && el.value.trim() !== "" && el.value !== "0") filled++;
+  });
+  const hasDocs = document.getElementById("docs").files.length > 0;
+  const hasSig = !signaturePad.isEmpty();
+  if (hasDocs) filled++;
+  if (hasSig) filled++;
+
+  const total = trackable.length + 2;
+  const pct = Math.floor((filled / total) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressPct").innerText = pct + "%";
+}
+
+trackable.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener(el.type === "checkbox" ? "change" : "input", updateProgress);
+});
+
+/* ── VALIDATION ── */
+function sanitize(v) { return String(v).replace(/[<>]/g, "").trim(); }
+function validatePhone(p) { return /^0[6-8][0-9]{8}$/.test(p); }
+function validateAccount(a) { return /^\d{8,13}$/.test(a); }
+
+function luhnCheck(id) {
+  let sum = 0, alt = false;
+  for (let i = id.length - 1; i >= 0; i--) {
+    let n = parseInt(id.charAt(i));
+    if (alt) { n *= 2; if (n > 9) n -= 9; }
+    sum += n; alt = !alt;
+  }
+  return sum % 10 === 0;
+}
+
+function validateSAID(id) {
+  if (!/^\d{13}$/.test(id)) return false;
+  const yy = parseInt(id.slice(0, 2));
+  const mm = parseInt(id.slice(2, 4));
+  const dd = parseInt(id.slice(4, 6));
+  const year = yy < 30 ? 2000 + yy : 1900 + yy;
+  const dob = new Date(year, mm - 1, dd);
+  if (dob.getFullYear() !== year || dob.getMonth() !== mm - 1 || dob.getDate() !== dd) return false;
+  return luhnCheck(id);
+}
+
+/* ── ID FEEDBACK ── */
+document.getElementById("fullname").addEventListener("input", function () {
+  this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
+});
+
+document.getElementById("idnum").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "");
+  const hint = document.getElementById("idHint");
+  if (this.value.length === 13) {
+    if (validateSAID(this.value)) {
+      hint.innerText = "✓ Valid South African ID";
+      hint.className = "field-hint show ok";
+      this.classList.add("valid"); this.classList.remove("invalid");
+    } else {
+      hint.innerText = "✗ Invalid ID — please check";
+      hint.className = "field-hint show err";
+      this.classList.add("invalid"); this.classList.remove("valid");
+    }
+  } else {
+    hint.className = "field-hint";
+    this.classList.remove("valid", "invalid");
+  }
+  updateProgress();
+});
+
+document.getElementById("account").addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "");
+});
+
+/* ── SIGNATURE ── */
 const canvas = document.getElementById("sigPad");
 
 function resizeCanvas() {
@@ -694,162 +972,106 @@ function resizeCanvas() {
   canvas.getContext("2d").scale(ratio, ratio);
 }
 
-window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-const pad = new SignaturePad(canvas, {
-  backgroundColor: "#ffffff",
-  penColor: "#0D0D0D",
+const signaturePad = new SignaturePad(canvas, {
+  penColor: "#00C16A",
+  backgroundColor: "#1A1A22",
   minWidth: 1.5,
-  maxWidth: 3
+  maxWidth: 3.5
 });
 
-pad.addEventListener("beginStroke", () => {
-  document.getElementById("sigPlaceholder").style.display = "none";
+signaturePad.addEventListener("beginStroke", () => {
+  document.getElementById("sigHint").style.display = "none";
+  updateProgress();
 });
 
 function clearSig() {
-  pad.clear();
-  document.getElementById("sigPlaceholder").style.display = "block";
+  signaturePad.clear();
+  document.getElementById("sigHint").style.display = "flex";
+  updateProgress();
 }
-
-/* ── HELPERS ── */
-function sanitize(v) { return String(v).replace(/[<>]/g, "").trim(); }
-
-/* ── SA ID VALIDATION ── */
-function luhnCheck(id) {
-  let sum = 0, alt = false;
-  for (let i = id.length - 1; i >= 0; i--) {
-    let n = parseInt(id.charAt(i), 10);
-    if (alt) { n *= 2; if (n > 9) n -= 9; }
-    sum += n; alt = !alt;
-  }
-  return sum % 10 === 0;
-}
-
-function validateSAID(id) {
-  if (!/^\d{13}$/.test(id)) return false;
-  const yy = parseInt(id.substring(0, 2));
-  const mm = parseInt(id.substring(2, 4));
-  const dd = parseInt(id.substring(4, 6));
-  const year = yy < 30 ? 2000 + yy : 1900 + yy;
-  const dob = new Date(year, mm - 1, dd);
-  if (dob.getFullYear() !== year || dob.getMonth() !== mm - 1 || dob.getDate() !== dd) return false;
-  return luhnCheck(id);
-}
-
-function validatePhone(p) { return /^0[6-8][0-9]{8}$/.test(p); }
-function validateAccount(a) { return /^\d{8,13}$/.test(a); }
-
-/* ── AFFORDABILITY ── */
-function checkAffordability() {
-  const income = parseFloat(document.getElementById("netIncome").value) || 0;
-  const dot = document.getElementById("statusDot");
-  const txt = document.getElementById("statusText");
-
-  if (income > 0 && 650 > income * 0.30) {
-    dot.className = "status-dot error";
-    txt.className = "status-text error";
-    txt.innerText = "Affordability Exceeded — Income Too Low";
-  } else {
-    dot.className = "status-dot";
-    txt.className = "status-text";
-    txt.innerText = "Pending Review";
-  }
-}
-
-document.getElementById("netIncome").addEventListener("input", checkAffordability);
-
-/* ── ID FIELD FEEDBACK ── */
-document.getElementById("fullname").addEventListener("input", function () {
-  this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
-});
-
-document.getElementById("idnum").addEventListener("input", function () {
-  this.value = this.value.replace(/\D/g, "");
-  const label = document.getElementById("idLabel");
-  if (this.value.length === 13) {
-    if (validateSAID(this.value)) {
-      label.innerText = "✓ Valid South African ID";
-      label.style.color = "var(--success)";
-      this.classList.add("valid"); this.classList.remove("invalid");
-    } else {
-      label.innerText = "✗ Invalid ID Number";
-      label.style.color = "var(--danger)";
-      this.classList.add("invalid"); this.classList.remove("valid");
-    }
-  } else {
-    label.innerText = "South African ID Number";
-    label.style.color = "";
-    this.classList.remove("valid", "invalid");
-  }
-});
-
-document.getElementById("account").addEventListener("input", function () {
-  this.value = this.value.replace(/\D/g, "");
-});
 
 /* ── FILE UPLOAD ── */
+const uploadBox = document.getElementById("uploadBox");
 const fileInput = document.getElementById("docs");
-const dropZone = document.getElementById("dropZone");
 
-dropZone.addEventListener("click", () => fileInput.click());
-dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("active"); });
-dropZone.addEventListener("dragleave", () => dropZone.classList.remove("active"));
-dropZone.addEventListener("drop", e => {
+uploadBox.addEventListener("click", () => fileInput.click());
+uploadBox.addEventListener("dragover", e => { e.preventDefault(); uploadBox.classList.add("active"); });
+uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("active"));
+uploadBox.addEventListener("drop", e => {
   e.preventDefault();
-  dropZone.classList.remove("active");
+  uploadBox.classList.remove("active");
   fileInput.files = e.dataTransfer.files;
-  updateFileDisplay();
+  renderFiles();
 });
-fileInput.addEventListener("change", updateFileDisplay);
+fileInput.addEventListener("change", renderFiles);
 
-function updateFileDisplay() {
-  const files = [...fileInput.files];
-  document.getElementById("fileText").innerText = files.length ? `${files.length} file(s) selected` : "Tap to upload ID, Payslip & Bank Statement";
-  const list = document.getElementById("fileList");
-  list.innerHTML = files.map(f => `<span class="file-chip">📄 ${f.name}</span>`).join("");
+function renderFiles() {
+  const chips = document.getElementById("fileChips");
+  chips.innerHTML = "";
+  const ALLOWED = ["application/pdf","image/png","image/jpeg"];
+  const MAX = 5 * 1024 * 1024;
+  [...fileInput.files].forEach(f => {
+    if (!ALLOWED.includes(f.type)) { alert(f.name + " — invalid file type"); return; }
+    if (f.size > MAX) { alert(f.name + " — exceeds 5MB"); return; }
+    const c = document.createElement("div");
+    c.className = "file-chip";
+    c.innerText = "✓ " + f.name;
+    chips.appendChild(c);
+  });
+  updateProgress();
 }
 
 /* ── RATE LIMIT ── */
 function checkCooldown() {
-  const last = localStorage.getItem("5clipa_last");
+  const last = localStorage.getItem("5clipa_submit");
   if (last && Date.now() - parseInt(last) < 300000) {
-    alert("Please wait 5 minutes before submitting another application.");
+    alert("Please wait 5 minutes before submitting again.");
     return false;
   }
   return true;
 }
 
 /* ── FILE TO BASE64 ── */
-async function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
     const r = new FileReader();
-    r.onload = () => resolve({ name: file.name, mimeType: file.type, data: r.result });
-    r.onerror = reject;
+    r.onload = () => res({ name: file.name, type: file.type, data: r.result });
+    r.onerror = rej;
     r.readAsDataURL(file);
   });
 }
 
 /* ── PDF EXPORT ── */
 async function generatePDF() {
-  const idField = document.getElementById("idnum");
-  const original = idField.value;
-  idField.value = original.slice(0, 6) + "******" + original.slice(-1);
-  await html2pdf().from(document.getElementById("appContent")).set({
-    margin: 0.4,
-    filename: `${reference}_5Clipa_Agreement.pdf`,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 3 },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
-  }).save();
-  idField.value = original;
+  const f = document.getElementById("idnum");
+  const orig = f.value;
+  f.value = orig.slice(0, 6) + "******" + orig.slice(-1);
+  try {
+    await html2pdf().from(document.getElementById("appContent")).set({
+      margin: 0.4,
+      filename: `${reference}_5Clipa_Agreement.pdf`,
+      image: { type: "jpeg", quality: 0.95 },
+      html2canvas: { scale: 2, backgroundColor: "#060608" },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    }).save();
+  } finally {
+    f.value = orig;
+  }
+}
+
+/* ── SUCCESS HANDLER ── */
+function showSuccess() {
+  document.getElementById("successRef").innerText = reference;
+  document.getElementById("successModal").style.display = "flex";
+  confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ["#00C16A","#00FF95","#FFB800","#ffffff"] });
+  document.getElementById("downloadPdfBtn").addEventListener("click", generatePDF, { once: true });
 }
 
 /* ── SUBMIT ── */
-document.getElementById("submitBtn").addEventListener("click", submitApplication);
-
-async function submitApplication() {
+document.getElementById("submitBtn").addEventListener("click", async () => {
   if (!checkCooldown()) return;
 
   const fullname = sanitize(document.getElementById("fullname").value);
@@ -857,19 +1079,21 @@ async function submitApplication() {
   const phone = sanitize(document.getElementById("phone").value);
   const payday = sanitize(document.getElementById("payday").value);
   const employer = sanitize(document.getElementById("employer").value);
-  const income = parseFloat(document.getElementById("netIncome").value) || 0;
+  const income = parseFloat(document.getElementById("income").value) || 0;
   const bank = sanitize(document.getElementById("bank").value);
   const account = sanitize(document.getElementById("account").value);
+  const amount = +slider.value;
+  const repayment = calcLoan(amount);
 
-  if (!fullname || !id || !phone || !payday || !employer || !bank || !account) {
+  if (!fullname || !id || !phone || !payday || !employer || !income || !bank || !account) {
     alert("Please complete all required fields."); return;
   }
   if (!validateSAID(id)) { alert("Invalid South African ID number."); return; }
   if (!validatePhone(phone)) { alert("Invalid South African phone number."); return; }
   if (!validateAccount(account)) { alert("Invalid account number."); return; }
-  if (income > 0 && 650 > income * 0.30) { alert("Application exceeds affordability limit (30% of income)."); return; }
+  if (repayment > income * 0.30) { alert("Loan repayment exceeds 30% of your income (affordability limit)."); return; }
   if (fileInput.files.length < 1) { alert("Please upload at least one supporting document."); return; }
-  if (pad.isEmpty()) { alert("Please provide your signature."); return; }
+  if (signaturePad.isEmpty()) { alert("Please provide your signature."); return; }
   if (!document.getElementById("consent").checked) { alert("Please accept the consent declaration."); return; }
 
   document.getElementById("loadingOverlay").style.display = "flex";
@@ -877,50 +1101,39 @@ async function submitApplication() {
 
   try {
     const files = [];
-    for (const file of fileInput.files) {
-      files.push(await fileToBase64(file));
-    }
+    for (const file of fileInput.files) files.push(await fileToBase64(file));
 
     const payload = {
       timestamp: new Date().toISOString(),
-      reference,
-      fullname,
-      id,
-      phone,
-      employer,
-      income,
-      loanAmount: 500,
-      totalRepayment: 650,
-      payday,
-      bank,
-      account,
-      signature: pad.toDataURL(),
+      reference, fullname, id, phone,
+      payday, employer, income,
+      bank, account, amount, repayment,
+      signature: signaturePad.toDataURL(),
       files
     };
 
-    const response = await fetch(API_URL, {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
-    const result = await response.json();
+    const result = await res.json();
     if (!result.success) throw new Error(result.error || "Submission failed");
 
-    await generatePDF();
-    localStorage.setItem("5clipa_last", Date.now());
-    alert("Application submitted successfully.\nReference: " + reference);
-    location.reload();
-
-  } catch (error) {
-    console.error(error);
-    // Still generate PDF even if API fails
-    await generatePDF().catch(() => {});
-    alert("Application saved locally.\nReference: " + reference + "\n\nNote: Update the API_URL in the code to connect to your backend.");
-    document.getElementById("submitBtn").disabled = false;
+    localStorage.setItem("5clipa_submit", Date.now());
     document.getElementById("loadingOverlay").style.display = "none";
+    showSuccess();
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("submitBtn").disabled = false;
+    // Still show success and offer PDF even if API has issues
+    const retry = confirm("Submission may have failed. Save a PDF copy and try again?\n\nError: " + (err.message || "Network error"));
+    if (retry) await generatePDF().catch(() => {});
   }
-}
+});
 </script>
 </body>
 </html>
