@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>5Clipa • Fast Loans</title>
-<meta http-equiv="Content-Security-Policy"
-content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src *;">
+<meta name="theme-color" content="#00C16A">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src *;">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root{
   --bg:#060608;
@@ -25,6 +29,7 @@ content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.clo
 
 *{ margin:0; padding:0; box-sizing:border-box; }
 ::selection{ background:var(--green); color:#000; }
+html{ scroll-behavior:smooth; }
 
 body{
   background:var(--bg);
@@ -44,7 +49,6 @@ body::before{
   z-index:0;
 }
 
-/* NOISE */
 body::after{
   content:'';
   position:fixed;
@@ -74,19 +78,14 @@ body::after{
   justify-content:space-between;
   align-items:center;
   border-bottom:1px solid var(--line);
-  margin-bottom:44px;
+  margin-bottom:40px;
 }
 
-.logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:42px;
-  letter-spacing:2px;
-  line-height:1;
-}
+.logo{ font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:2px; line-height:1; }
 .logo span{ color:var(--green); }
 
 .ref{
-  padding:10px 16px;
+  padding:10px 14px;
   border-radius:10px;
   background:rgba(0,193,106,.08);
   border:1px solid rgba(0,193,106,.2);
@@ -98,7 +97,7 @@ body::after{
 }
 
 /* HERO */
-.hero{ margin-bottom:44px; }
+.hero{ margin-bottom:40px; }
 
 .eyebrow{
   color:var(--green);
@@ -106,101 +105,79 @@ body::after{
   letter-spacing:4px;
   font-size:11px;
   font-weight:700;
-  margin-bottom:18px;
+  margin-bottom:20px;
   display:flex;
   align-items:center;
   gap:10px;
 }
 .eyebrow::before{ content:''; width:28px; height:2px; background:var(--green); }
 
-.hero h1{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(62px,12vw,110px);
-  line-height:.9;
-  letter-spacing:1px;
-}
+.hero h1{ font-family:'Bebas Neue',sans-serif; font-size:clamp(60px,11vw,110px); line-height:.9; }
 .hero h1 span{ color:var(--green); display:block; }
-
-.hero p{
-  color:var(--muted);
-  margin-top:20px;
-  max-width:500px;
-  line-height:1.8;
-  font-size:15px;
-}
+.hero p{ color:var(--muted); margin-top:20px; max-width:500px; line-height:1.8; font-size:15px; }
 
 /* PROGRESS */
-.progress-wrap{ margin:0 0 32px; }
-
-.progress-top{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-.progress-top span{
-  font-size:11px;
-  color:var(--muted);
-  font-weight:700;
-  letter-spacing:2px;
-  text-transform:uppercase;
-}
+.progress-wrap{ margin-bottom:28px; }
+.progress-top{ display:flex; justify-content:space-between; margin-bottom:10px; }
+.progress-top span{ font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-weight:700; }
 #progressPct{ color:var(--green); }
+.progress{ height:6px; border-radius:999px; background:var(--card2); overflow:hidden; }
+.progress-fill{ width:0%; height:100%; background:linear-gradient(90deg,var(--green),#00FF95); transition:.4s cubic-bezier(.4,0,.2,1); }
 
-.progress{
-  height:6px;
-  background:var(--card2);
-  border-radius:100px;
-  overflow:hidden;
-}
-.progress-fill{
-  width:0%;
-  height:100%;
-  background:linear-gradient(90deg,var(--green),#00FF95);
-  border-radius:100px;
-  transition:width .4s cubic-bezier(.4,0,.2,1);
+/* STATUS */
+.status-bar{
+  position:sticky;
+  top:78px;
+  z-index:90;
+  padding:16px 20px;
+  border-radius:14px;
+  background:rgba(18,18,25,.92);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+  backdrop-filter:blur(18px);
 }
 
-/* CARD */
+.dot{ width:10px; height:10px; border-radius:50%; background:var(--gold); position:relative; flex-shrink:0; }
+.dot::after{ content:''; position:absolute; inset:-4px; border-radius:50%; background:rgba(255,184,0,.3); animation:ripple 1.8s ease-out infinite; }
+.dot.good{ background:var(--green); }
+.dot.good::after{ background:rgba(0,193,106,.3); }
+.dot.bad{ background:var(--danger); }
+.dot.bad::after{ display:none; }
+
+@keyframes ripple{
+  0%{ transform:scale(.8); opacity:1; }
+  100%{ transform:scale(2.4); opacity:0; }
+}
+
+.status-text{ font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-weight:700; }
+.status-text.danger{ color:var(--danger); }
+.status-text.good{ color:var(--green); }
+
+/* CARDS */
 .card{
-  background:var(--card);
+  background:rgba(18,18,25,.88);
   border:1px solid var(--line);
   border-radius:24px;
   padding:32px;
   margin-bottom:18px;
   position:relative;
   overflow:hidden;
-  animation:fadeUp .5s ease both;
+  backdrop-filter:blur(20px);
+  transition:.25s;
 }
-
 .card::before{
   content:'';
   position:absolute;
   top:0; left:0; right:0;
   height:1px;
-  background:linear-gradient(90deg,transparent,rgba(0,193,106,.25),transparent);
+  background:linear-gradient(90deg,transparent,rgba(0,193,106,.2),transparent);
 }
+.card:hover{ transform:translateY(-2px); box-shadow:0 12px 40px rgba(0,0,0,.3); }
 
-@keyframes fadeUp{
-  from{ opacity:0; transform:translateY(16px); }
-  to{ opacity:1; transform:translateY(0); }
-}
-.card:nth-child(1){ animation-delay:.05s; }
-.card:nth-child(2){ animation-delay:.1s; }
-.card:nth-child(3){ animation-delay:.15s; }
-.card:nth-child(4){ animation-delay:.2s; }
-.card:nth-child(5){ animation-delay:.25s; }
-.card:nth-child(6){ animation-delay:.3s; }
-
-.card-number{
-  position:absolute;
-  bottom:-10px; right:20px;
-  font-size:90px;
-  opacity:.04;
-  font-family:'Bebas Neue',sans-serif;
-  pointer-events:none;
-  line-height:1;
-  letter-spacing:3px;
-}
+.card-number{ position:absolute; bottom:-10px; right:20px; font-size:90px; opacity:.04; font-family:'Bebas Neue',sans-serif; pointer-events:none; }
 
 .section-title{
   font-size:10px;
@@ -216,15 +193,7 @@ body::after{
 .section-title::after{ content:''; flex:1; height:1px; background:var(--line); }
 
 /* FORM */
-label{
-  display:block;
-  margin-bottom:8px;
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  font-weight:700;
-}
+label{ display:block; margin-bottom:8px; color:var(--muted); font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:700; }
 
 input, select{
   width:100%;
@@ -236,111 +205,53 @@ input, select{
   margin-bottom:18px;
   font-size:15px;
   font-family:'Outfit',sans-serif;
-  transition:all .2s;
+  transition:.2s;
   -webkit-appearance:none;
 }
-
 input::placeholder{ color:var(--muted); }
-
-input:focus, select:focus{
-  outline:none;
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(0,193,106,.1);
-  background:rgba(0,193,106,.04);
-}
-
+input:focus, select:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(0,193,106,.1); background:rgba(0,193,106,.04); }
 select option{ background:var(--card2); color:var(--text); }
-
 input.valid{ border-color:var(--green); background:rgba(0,193,106,.06); }
 input.invalid{ border-color:var(--danger); background:rgba(255,77,77,.06); }
 
-.field-hint{
-  font-size:11px;
-  font-weight:600;
-  margin-top:-12px;
-  margin-bottom:14px;
-  display:none;
-  letter-spacing:.3px;
-}
+.field-hint{ font-size:11px; margin-top:-12px; margin-bottom:14px; display:none; font-weight:600; }
 .field-hint.show{ display:block; }
 .field-hint.ok{ color:var(--green); }
 .field-hint.err{ color:var(--danger); }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
+.grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 
-/* LOAN SLIDER CARD */
-.loan-display{
-  text-align:center;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:100px;
-  color:var(--gold);
-  line-height:1;
-  letter-spacing:2px;
-  margin-bottom:4px;
-}
-
-.loan-sub{
-  text-align:center;
-  color:var(--muted);
-  font-size:11px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  margin-bottom:22px;
-}
+/* LOAN */
+.loan-display{ text-align:center; font-family:'Bebas Neue',sans-serif; font-size:100px; color:var(--gold); line-height:1; letter-spacing:2px; }
+.loan-sub{ text-align:center; color:var(--muted); margin-bottom:24px; font-size:11px; letter-spacing:2px; text-transform:uppercase; margin-top:4px; }
 
 input[type="range"]{
   -webkit-appearance:none;
   width:100%;
   height:6px;
   background:var(--card2);
-  border-radius:100px;
-  padding:0;
   border:none;
+  padding:0;
+  border-radius:999px;
   margin-bottom:0;
   cursor:pointer;
 }
 input[type="range"]::-webkit-slider-thumb{
   -webkit-appearance:none;
-  width:22px; height:22px;
+  width:24px; height:24px;
   border-radius:50%;
   background:var(--green);
   cursor:pointer;
-  box-shadow:0 0 12px rgba(0,193,106,.5);
+  box-shadow:0 0 16px rgba(0,193,106,.6);
   transition:box-shadow .2s;
 }
-input[type="range"]::-webkit-slider-thumb:hover{
-  box-shadow:0 0 20px rgba(0,193,106,.8);
-}
+input[type="range"]::-webkit-slider-thumb:hover{ box-shadow:0 0 24px rgba(0,193,106,.9); }
 
-.range-labels{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-  font-size:11px;
-  color:var(--muted);
-}
+.range-labels{ display:flex; justify-content:space-between; margin-top:10px; font-size:11px; color:var(--muted); }
 
-.breakdown{
-  margin-top:26px;
-  display:grid;
-  gap:10px;
-}
-
-.break-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:13px 18px;
-  background:var(--card2);
-  border-radius:12px;
-  border:1px solid var(--line);
-  font-size:14px;
-}
-.break-row strong{ font-weight:600; color:var(--text); }
+.breakdown{ margin-top:26px; display:grid; gap:10px; }
+.break-row{ display:flex; justify-content:space-between; align-items:center; padding:13px 18px; background:var(--card2); border-radius:12px; border:1px solid var(--line); font-size:14px; }
+.break-row strong{ font-weight:600; }
 
 .break-total{
   display:flex;
@@ -349,59 +260,11 @@ input[type="range"]::-webkit-slider-thumb:hover{
   padding:16px 20px;
   background:var(--green);
   border-radius:14px;
-  margin-top:4px;
 }
-.break-total span{ font-family:'Bebas Neue',sans-serif; font-size:13px; color:#000; letter-spacing:1px; }
-.break-total strong{ font-family:'Bebas Neue',sans-serif; font-size:26px; color:#000; letter-spacing:2px; }
+.break-total span{ font-family:'Bebas Neue',sans-serif; font-size:14px; color:#000; letter-spacing:1px; }
+.break-total strong{ font-family:'Bebas Neue',sans-serif; font-size:28px; color:#000; letter-spacing:2px; }
 
-/* STATUS */
-.status-bar{
-  padding:16px 20px;
-  border-radius:14px;
-  background:var(--card);
-  border:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:18px;
-}
-
-.dot{
-  width:10px; height:10px;
-  border-radius:50%;
-  background:var(--gold);
-  flex-shrink:0;
-  position:relative;
-}
-.dot::after{
-  content:'';
-  position:absolute;
-  inset:-4px;
-  border-radius:50%;
-  background:rgba(255,184,0,.3);
-  animation:ripple 1.8s ease-out infinite;
-}
-.dot.good{ background:var(--green); }
-.dot.good::after{ background:rgba(0,193,106,.3); }
-.dot.bad{ background:var(--danger); }
-.dot.bad::after{ display:none; }
-
-@keyframes ripple{
-  0%{ transform:scale(.8); opacity:1; }
-  100%{ transform:scale(2.4); opacity:0; }
-}
-
-.status-text{
-  font-size:12px;
-  font-weight:700;
-  color:var(--muted);
-  letter-spacing:2px;
-  text-transform:uppercase;
-}
-.status-text.danger{ color:var(--danger); }
-.status-text.good{ color:var(--green); }
-
-/* FILE UPLOAD */
+/* FILE */
 .upload{
   border:2px dashed rgba(0,193,106,.25);
   border-radius:18px;
@@ -409,73 +272,38 @@ input[type="range"]::-webkit-slider-thumb:hover{
   text-align:center;
   cursor:pointer;
   background:rgba(0,193,106,.03);
-  transition:all .2s;
+  transition:.2s;
 }
-.upload:hover, .upload.active{
-  border-color:var(--green);
-  background:rgba(0,193,106,.07);
-}
+.upload:hover, .upload.active{ border-color:var(--green); background:rgba(0,193,106,.07); }
 .upload-icon{ font-size:38px; margin-bottom:12px; }
-.upload h3{ font-weight:600; font-size:16px; margin-bottom:6px; }
-.upload p{ color:var(--muted); font-size:13px; }
+.upload h3{ font-weight:600; font-size:16px; }
+.upload p{ color:var(--muted); margin-top:8px; font-size:13px; }
 
-.files{
-  margin-top:16px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-}
-.file-chip{
-  background:rgba(0,193,106,.1);
-  color:var(--green);
-  border:1px solid rgba(0,193,106,.2);
-  border-radius:100px;
-  padding:7px 14px;
+.files{ margin-top:16px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.file-chip{ background:rgba(0,193,106,.1); color:var(--green); border:1px solid rgba(0,193,106,.2); border-radius:999px; padding:7px 14px; font-size:12px; font-weight:600; }
+
+.ocr-banner{
+  margin-top:12px;
+  padding:10px 16px;
+  background:rgba(255,184,0,.08);
+  border:1px solid rgba(255,184,0,.2);
+  border-radius:10px;
+  color:var(--gold);
   font-size:12px;
   font-weight:600;
+  text-align:center;
+  display:none;
 }
+.ocr-banner.show{ display:block; }
 
 /* SIGNATURE */
-.sig-wrap{
-  height:220px;
-  border-radius:18px;
-  overflow:hidden;
-  background:var(--card2);
-  border:1px solid var(--line);
-  position:relative;
-  transition:border-color .2s;
-}
+.sig-wrap{ height:220px; border-radius:18px; overflow:hidden; background:var(--card2); border:1px solid var(--line); position:relative; transition:border-color .2s; }
 .sig-wrap:focus-within{ border-color:var(--green); }
-
 canvas{ width:100%; height:100%; display:block; }
+.sig-placeholder{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:var(--muted); pointer-events:none; }
+.sig-placeholder .icon{ font-size:28px; margin-bottom:8px; opacity:.5; }
 
-.sig-placeholder{
-  position:absolute;
-  top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  text-align:center;
-  color:var(--muted);
-  pointer-events:none;
-}
-.sig-placeholder .icon{ font-size:28px; margin-bottom:8px; opacity:.4; }
-.sig-placeholder p{ font-size:13px; }
-
-.ghost-btn{
-  margin-top:12px;
-  background:none;
-  border:1px solid var(--line);
-  color:var(--muted);
-  padding:9px 18px;
-  border-radius:9px;
-  font-family:'Outfit',sans-serif;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  cursor:pointer;
-  transition:all .2s;
-}
+.ghost-btn{ margin-top:12px; background:none; border:1px solid var(--line); color:var(--muted); padding:9px 18px; border-radius:9px; cursor:pointer; font-family:'Outfit',sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; transition:.2s; }
 .ghost-btn:hover{ border-color:var(--danger); color:var(--danger); }
 
 /* CONSENT */
@@ -495,18 +323,18 @@ canvas{ width:100%; height:100%; display:block; }
   flex-shrink:0;
   margin-top:3px;
   cursor:pointer;
-  background:var(--card2);
+  background:none;
   border:none;
-  margin-bottom:0;
   padding:0;
+  margin-bottom:0;
 }
 .consent-wrap label{
   text-transform:none;
   letter-spacing:0;
   font-size:13px;
   line-height:1.8;
-  font-weight:400;
   color:var(--muted);
+  font-weight:400;
   margin-bottom:0;
   cursor:pointer;
 }
@@ -525,7 +353,7 @@ canvas{ width:100%; height:100%; display:block; }
   font-size:24px;
   letter-spacing:3px;
   cursor:pointer;
-  transition:all .25s;
+  transition:.25s;
   position:relative;
   overflow:hidden;
 }
@@ -538,18 +366,8 @@ canvas{ width:100%; height:100%; display:block; }
   transition:left .5s;
 }
 .submit-btn:hover::before{ left:100%; }
-.submit-btn:hover{
-  background:#00d975;
-  transform:translateY(-2px);
-  box-shadow:0 0 40px rgba(0,193,106,.45);
-}
-.submit-btn:disabled{
-  background:var(--card2);
-  color:var(--muted);
-  cursor:not-allowed;
-  transform:none;
-  box-shadow:none;
-}
+.submit-btn:hover{ background:#00d975; transform:translateY(-2px); box-shadow:0 0 40px rgba(0,193,106,.45); }
+.submit-btn:disabled{ background:var(--card2); color:var(--muted); cursor:not-allowed; transform:none; box-shadow:none; }
 
 /* LOADING */
 #loadingOverlay{
@@ -563,22 +381,11 @@ canvas{ width:100%; height:100%; display:block; }
   z-index:99999;
   gap:20px;
 }
-.loader-ring{
-  width:60px; height:60px;
-  border-radius:50%;
-  border:3px solid rgba(255,255,255,.06);
-  border-top:3px solid var(--green);
-  animation:spin .8s linear infinite;
-}
+.loader-ring{ width:60px; height:60px; border-radius:50%; border:3px solid rgba(255,255,255,.06); border-top:3px solid var(--green); animation:spin .8s linear infinite; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
-.loader-label{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:18px;
-  letter-spacing:4px;
-  color:var(--muted);
-}
+.loader-label{ font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:4px; color:var(--muted); }
 
-/* SUCCESS MODAL */
+/* SUCCESS */
 #successModal{
   position:fixed;
   inset:0;
@@ -590,15 +397,11 @@ canvas{ width:100%; height:100%; display:block; }
   flex-direction:column;
   text-align:center;
   padding:24px;
+  gap:0;
 }
-#successModal h2{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(56px,12vw,90px);
-  line-height:.95;
-  margin-bottom:16px;
-}
+#successModal h2{ font-family:'Bebas Neue',sans-serif; font-size:clamp(56px,12vw,90px); line-height:.95; margin-bottom:14px; }
 #successModal h2 span{ color:var(--green); }
-#successModal p{ color:var(--muted); margin-bottom:28px; max-width:480px; line-height:1.8; }
+#successModal p{ color:var(--muted); max-width:440px; line-height:1.8; margin-bottom:26px; }
 
 .ref-big{
   background:rgba(0,193,106,.1);
@@ -612,11 +415,9 @@ canvas{ width:100%; height:100%; display:block; }
   margin-bottom:28px;
 }
 
-.modal-actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
-
-.action-btn{
-  border:none;
-  padding:14px 24px;
+.modal-btns{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.modal-btn{
+  padding:14px 26px;
   border-radius:12px;
   font-family:'Outfit',sans-serif;
   font-size:13px;
@@ -624,29 +425,45 @@ canvas{ width:100%; height:100%; display:block; }
   cursor:pointer;
   letter-spacing:1px;
   text-transform:uppercase;
-  transition:all .2s;
+  border:none;
+  transition:.2s;
 }
-.action-btn.primary{ background:var(--green); color:#000; }
-.action-btn.primary:hover{ background:#00d975; }
-.action-btn.outline{ background:none; border:1px solid var(--line); color:var(--muted); }
-.action-btn.outline:hover{ border-color:var(--green); color:var(--green); }
+.modal-btn.primary{ background:var(--green); color:#000; }
+.modal-btn.primary:hover{ background:#00d975; }
+.modal-btn.outline{ background:none; border:1px solid var(--line); color:var(--muted); }
+.modal-btn.outline:hover{ border-color:var(--green); color:var(--green); }
 
-/* FOOTER */
-.footer{
-  text-align:center;
-  padding:44px 0 20px;
-  color:rgba(255,255,255,.2);
-  line-height:2.2;
-  font-size:11px;
-  letter-spacing:.5px;
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(0);
+  padding:14px 22px;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:600;
+  z-index:999999;
+  white-space:nowrap;
+  animation:toastIn .3s ease;
+  pointer-events:none;
 }
-.footer strong{ color:rgba(0,193,106,.5); }
-.footer a{ color:rgba(0,193,106,.4); text-decoration:none; }
+.toast.success{ background:#0d2e1c; color:var(--green); border:1px solid rgba(0,193,106,.3); }
+.toast.error{ background:#2e0d0d; color:var(--danger); border:1px solid rgba(255,77,77,.3); }
+.toast.info{ background:#1a1a2e; color:var(--gold); border:1px solid rgba(255,184,0,.3); }
 
+@keyframes toastIn{
+  from{ opacity:0; transform:translateX(-50%) translateY(10px); }
+  to{ opacity:1; transform:translateX(-50%) translateY(0); }
+}
+
+/* MOBILE */
 @media(max-width:600px){
   .grid{ grid-template-columns:1fr; }
+  .hero h1{ font-size:54px; }
   .loan-display{ font-size:72px; }
   .card{ padding:24px; }
+  .submit-btn{ position:sticky; bottom:16px; }
 }
 </style>
 </head>
@@ -661,21 +478,21 @@ canvas{ width:100%; height:100%; display:block; }
 <!-- SUCCESS MODAL -->
 <div id="successModal">
   <h2>Application<br><span>Submitted!</span></h2>
-  <p>Your application has been received and is under review. Save your reference number below.</p>
+  <p>Your application has been received and is under review. Keep your reference number safe.</p>
   <div class="ref-big" id="successRef"></div>
-  <div class="modal-actions">
-    <button class="action-btn primary" id="downloadPdfBtn">Download PDF Copy</button>
-    <button class="action-btn outline" onclick="location.reload()">New Application</button>
+  <div class="modal-btns">
+    <button class="modal-btn primary" id="pdfBtn">📄 Download PDF Copy</button>
+    <button class="modal-btn outline" onclick="location.reload()">New Application</button>
   </div>
 </div>
 
 <div class="app" id="appContent">
 
   <!-- NAV -->
-  <nav class="nav">
+  <div class="nav">
     <div class="logo">5<span>Clipa</span></div>
     <div class="ref" id="refTag">Loading...</div>
-  </nav>
+  </div>
 
   <!-- HERO -->
   <div class="hero">
@@ -695,6 +512,12 @@ canvas{ width:100%; height:100%; display:block; }
     </div>
   </div>
 
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="dot" id="statusDot"></div>
+    <div class="status-text" id="statusText">Pending Review</div>
+  </div>
+
   <!-- LOAN AMOUNT -->
   <div class="card">
     <div class="card-number">00</div>
@@ -707,20 +530,14 @@ canvas{ width:100%; height:100%; display:block; }
     <div class="range-labels"><span>R500</span><span>R5,000</span></div>
 
     <div class="breakdown">
-      <div class="break-row"><span>Interest (5% per month)</span><strong id="iF">R25</strong></div>
-      <div class="break-row"><span>Initiation Fee</span><strong id="nF">R75</strong></div>
+      <div class="break-row"><span>Interest (5% per month)</span><strong id="interestFee">R25</strong></div>
+      <div class="break-row"><span>Initiation Fee</span><strong id="initiationFee">R75</strong></div>
       <div class="break-row"><span>Service Fee</span><strong>R50</strong></div>
       <div class="break-total">
         <span>Total Repayment</span>
-        <strong id="rT">R650</strong>
+        <strong id="repaymentTotal">R650</strong>
       </div>
     </div>
-  </div>
-
-  <!-- STATUS -->
-  <div class="status-bar">
-    <div class="dot" id="statusDot"></div>
-    <div class="status-text" id="statusText">Pending Review</div>
   </div>
 
   <!-- PERSONAL -->
@@ -731,7 +548,7 @@ canvas{ width:100%; height:100%; display:block; }
     <label>Full Legal Name</label>
     <input type="text" id="fullname" placeholder="Name & Surname" autocomplete="name">
 
-    <label id="idLabel">South African ID Number</label>
+    <label>South African ID Number</label>
     <input type="text" id="idnum" maxlength="13" placeholder="13-digit ID Number">
     <div class="field-hint" id="idHint"></div>
 
@@ -788,10 +605,11 @@ canvas{ width:100%; height:100%; display:block; }
       <input type="file" hidden multiple id="docs" accept=".pdf,.png,.jpg,.jpeg">
       <div class="upload-icon">📁</div>
       <h3>Upload Documents</h3>
-      <p style="margin-top:8px;">ID · Payslip · 3 Months Bank Statements</p>
-      <p style="margin-top:6px;font-size:11px;color:rgba(126,126,149,.6);">PDF, JPG or PNG · Max 5MB each</p>
+      <p>ID · Payslip · 3 Months Bank Statements</p>
+      <p style="margin-top:6px;font-size:11px;color:rgba(126,126,149,.5)">PDF, JPG or PNG · Max 5MB each</p>
       <div class="files" id="fileChips"></div>
     </div>
+    <div class="ocr-banner" id="ocrBanner">🔍 Scanning ID document for autofill...</div>
   </div>
 
   <!-- SIGNATURE -->
@@ -799,11 +617,11 @@ canvas{ width:100%; height:100%; display:block; }
     <div class="card-number">04</div>
     <div class="section-title">Digital Signature</div>
 
-    <div class="sig-wrap" id="sigWrap">
+    <div class="sig-wrap">
       <canvas id="sigPad"></canvas>
       <div class="sig-placeholder" id="sigHint">
         <div class="icon">✍️</div>
-        <p>Sign with your finger or mouse</p>
+        <p style="font-size:13px;">Sign with your finger or mouse</p>
       </div>
     </div>
 
@@ -819,44 +637,79 @@ canvas{ width:100%; height:100%; display:block; }
     <button class="submit-btn" id="submitBtn">Submit Application →</button>
   </div>
 
-  <div class="footer">
-    <strong>5CLIPA</strong><br>
+  <div style="text-align:center;padding:40px 0 20px;color:rgba(255,255,255,.2);line-height:2.2;font-size:11px;">
+    <strong style="color:rgba(0,193,106,.5)">5CLIPA</strong><br>
     A trading name of [Registered Company Name] (Pty) Ltd<br>
     Registered Credit Provider · NCR Reg No: [NCR Reg No.] · NCA 34 of 2005<br>
-    NCR Complaints: <a href="tel:0860627627">0860 627 627</a> · NCO: <a href="tel:0861662837">0861 662 837</a>
+    <span style="color:rgba(0,193,106,.35)">NCR: 0860 627 627 · NCO: 0861 662 837</span>
   </div>
 
 </div>
 
 <script>
-/* ── CONFIG ───────────────────────────────── */
+
+/* ═══════════════════════════════
+   CONFIG — YOUR LIVE ENDPOINT
+═══════════════════════════════ */
 const API_URL = "https://script.google.com/macros/s/AKfycbx818G2HgT3-jR5qJ8CpgCvE5HzU1JL788M0T2Cm5hgXQhDtX4WEBQWxWyHaXN1YqCI/exec";
 
-/* ── REFERENCE ── */
+/* ═══════════════════════════════
+   INIT
+═══════════════════════════════ */
 const reference = "5C-" + Math.floor(100000 + Math.random() * 900000);
 document.getElementById("refTag").innerText = reference;
 document.getElementById("payday").min = new Date().toISOString().split("T")[0];
 
-/* ── LOAN CALCULATION ── */
+/* ═══════════════════════════════
+   TOAST
+═══════════════════════════════ */
+let toastTimer;
+function showToast(msg, type = "success") {
+  clearTimeout(toastTimer);
+  document.querySelectorAll(".toast").forEach(t => t.remove());
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.innerText = msg;
+  document.body.appendChild(t);
+  toastTimer = setTimeout(() => t.remove(), 3200);
+}
+
+/* ═══════════════════════════════
+   VIBRATION
+═══════════════════════════════ */
+function vibrate(ms = 40) {
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+
+/* ═══════════════════════════════
+   NETWORK DETECTION
+═══════════════════════════════ */
+window.addEventListener("offline", () => showToast("⚠ No internet connection", "error"));
+window.addEventListener("online", () => showToast("✓ Connection restored", "info"));
+
+/* ═══════════════════════════════
+   LOAN CALCULATION
+═══════════════════════════════ */
 const slider = document.getElementById("loanSlider");
 
 function calcLoan(amount) {
   const interest = amount * 0.05;
   const initiation = amount <= 1000 ? 75 : Math.min(75 + (amount - 1000) * 0.1, 1050);
-  const service = 50;
-  const total = amount + interest + initiation + service;
+  const total = amount + interest + initiation + 50;
 
   document.getElementById("loanDisplay").innerText = "R" + amount.toLocaleString("en-ZA");
-  document.getElementById("iF").innerText = "R" + interest.toFixed(0);
-  document.getElementById("nF").innerText = "R" + initiation.toFixed(0);
-  document.getElementById("rT").innerText = "R" + total.toLocaleString("en-ZA", { minimumFractionDigits: 0 });
+  document.getElementById("interestFee").innerText = "R" + interest.toFixed(0);
+  document.getElementById("initiationFee").innerText = "R" + initiation.toFixed(0);
+  document.getElementById("repaymentTotal").innerText = "R" + total.toLocaleString("en-ZA", { minimumFractionDigits: 0 });
   return total;
 }
 
-slider.addEventListener("input", () => { calcLoan(+slider.value); checkAffordability(); });
 calcLoan(500);
+slider.addEventListener("input", () => { calcLoan(+slider.value); checkAffordability(); });
 
-/* ── AFFORDABILITY ── */
+/* ═══════════════════════════════
+   AFFORDABILITY
+═══════════════════════════════ */
 function checkAffordability() {
   const income = parseFloat(document.getElementById("income").value) || 0;
   const total = calcLoan(+slider.value);
@@ -864,50 +717,45 @@ function checkAffordability() {
   const txt = document.getElementById("statusText");
 
   if (income > 0 && total > income * 0.30) {
-    dot.className = "dot bad";
-    txt.className = "status-text danger";
-    txt.innerText = "Affordability Exceeded";
+    dot.className = "dot bad"; txt.className = "status-text danger"; txt.innerText = "Affordability Exceeded";
   } else if (income > 0) {
-    dot.className = "dot good";
-    txt.className = "status-text good";
-    txt.innerText = "Eligible For Review";
+    dot.className = "dot good"; txt.className = "status-text good"; txt.innerText = "Eligible For Review";
   } else {
-    dot.className = "dot";
-    txt.className = "status-text";
-    txt.innerText = "Pending Review";
+    dot.className = "dot"; txt.className = "status-text"; txt.innerText = "Pending Review";
   }
 }
 
 document.getElementById("income").addEventListener("input", checkAffordability);
 
-/* ── PROGRESS ── */
-const trackable = ["fullname","idnum","phone","payday","employer","income","bank","account","consent"];
+/* ═══════════════════════════════
+   PROGRESS TRACKER
+═══════════════════════════════ */
+const TRACKED = ["fullname","idnum","phone","payday","employer","income","bank","account","consent"];
 
 function updateProgress() {
   let filled = 0;
-  trackable.forEach(id => {
+  TRACKED.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     if (el.type === "checkbox") { if (el.checked) filled++; }
-    else if (el.value && el.value.trim() !== "" && el.value !== "0") filled++;
+    else if (el.value && el.value.trim() && el.value !== "0") filled++;
   });
-  const hasDocs = document.getElementById("docs").files.length > 0;
-  const hasSig = !signaturePad.isEmpty();
-  if (hasDocs) filled++;
-  if (hasSig) filled++;
+  if (document.getElementById("docs").files.length > 0) filled++;
+  if (!signaturePad.isEmpty()) filled++;
 
-  const total = trackable.length + 2;
-  const pct = Math.floor((filled / total) * 100);
+  const pct = Math.floor((filled / (TRACKED.length + 2)) * 100);
   document.getElementById("progressFill").style.width = pct + "%";
   document.getElementById("progressPct").innerText = pct + "%";
 }
 
-trackable.forEach(id => {
+TRACKED.forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener(el.type === "checkbox" ? "change" : "input", updateProgress);
 });
 
-/* ── VALIDATION ── */
+/* ═══════════════════════════════
+   VALIDATION
+═══════════════════════════════ */
 function sanitize(v) { return String(v).replace(/[<>]/g, "").trim(); }
 function validatePhone(p) { return /^0[6-8][0-9]{8}$/.test(p); }
 function validateAccount(a) { return /^\d{8,13}$/.test(a); }
@@ -933,7 +781,7 @@ function validateSAID(id) {
   return luhnCheck(id);
 }
 
-/* ── ID FEEDBACK ── */
+/* ID Field live feedback */
 document.getElementById("fullname").addEventListener("input", function () {
   this.value = this.value.replace(/[^a-zA-Z\s]/g, "");
 });
@@ -947,7 +795,7 @@ document.getElementById("idnum").addEventListener("input", function () {
       hint.className = "field-hint show ok";
       this.classList.add("valid"); this.classList.remove("invalid");
     } else {
-      hint.innerText = "✗ Invalid ID — please check";
+      hint.innerText = "✗ Invalid ID number — please check";
       hint.className = "field-hint show err";
       this.classList.add("invalid"); this.classList.remove("valid");
     }
@@ -962,7 +810,9 @@ document.getElementById("account").addEventListener("input", function () {
   this.value = this.value.replace(/\D/g, "");
 });
 
-/* ── SIGNATURE ── */
+/* ═══════════════════════════════
+   SIGNATURE PAD
+═══════════════════════════════ */
 const canvas = document.getElementById("sigPad");
 
 function resizeCanvas() {
@@ -989,11 +839,13 @@ signaturePad.addEventListener("beginStroke", () => {
 
 function clearSig() {
   signaturePad.clear();
-  document.getElementById("sigHint").style.display = "flex";
+  document.getElementById("sigHint").style.display = "block";
   updateProgress();
 }
 
-/* ── FILE UPLOAD ── */
+/* ═══════════════════════════════
+   FILE UPLOAD + OCR AUTOFILL
+═══════════════════════════════ */
 const uploadBox = document.getElementById("uploadBox");
 const fileInput = document.getElementById("docs");
 
@@ -1004,37 +856,65 @@ uploadBox.addEventListener("drop", e => {
   e.preventDefault();
   uploadBox.classList.remove("active");
   fileInput.files = e.dataTransfer.files;
-  renderFiles();
+  handleFiles();
 });
-fileInput.addEventListener("change", renderFiles);
+fileInput.addEventListener("change", handleFiles);
 
-function renderFiles() {
+async function handleFiles() {
   const chips = document.getElementById("fileChips");
   chips.innerHTML = "";
   const ALLOWED = ["application/pdf","image/png","image/jpeg"];
   const MAX = 5 * 1024 * 1024;
-  [...fileInput.files].forEach(f => {
-    if (!ALLOWED.includes(f.type)) { alert(f.name + " — invalid file type"); return; }
-    if (f.size > MAX) { alert(f.name + " — exceeds 5MB"); return; }
-    const c = document.createElement("div");
-    c.className = "file-chip";
-    c.innerText = "✓ " + f.name;
-    chips.appendChild(c);
+  let hasImage = null;
+
+  [...fileInput.files].forEach(file => {
+    if (!ALLOWED.includes(file.type)) { showToast(file.name + " — invalid type", "error"); return; }
+    if (file.size > MAX) { showToast(file.name + " — exceeds 5MB", "error"); return; }
+    const chip = document.createElement("div");
+    chip.className = "file-chip";
+    chip.innerText = "✓ " + file.name;
+    chips.appendChild(chip);
+    if (file.type.includes("image") && !hasImage) hasImage = file;
   });
+
   updateProgress();
+
+  // OCR autofill — try to read ID number from uploaded image
+  if (hasImage && !document.getElementById("idnum").value) {
+    const banner = document.getElementById("ocrBanner");
+    banner.classList.add("show");
+    try {
+      const result = await Tesseract.recognize(hasImage, "eng", { logger: () => {} });
+      const match = result.data.text.match(/\d{13}/);
+      if (match && validateSAID(match[0])) {
+        document.getElementById("idnum").value = match[0];
+        document.getElementById("idnum").dispatchEvent(new Event("input"));
+        showToast("✓ ID number detected and filled in", "success");
+        vibrate(60);
+      }
+    } catch (e) {
+      // OCR failed silently — not critical
+    } finally {
+      banner.classList.remove("show");
+    }
+  }
 }
 
-/* ── RATE LIMIT ── */
+/* ═══════════════════════════════
+   RATE LIMIT
+═══════════════════════════════ */
 function checkCooldown() {
   const last = localStorage.getItem("5clipa_submit");
   if (last && Date.now() - parseInt(last) < 300000) {
-    alert("Please wait 5 minutes before submitting again.");
+    showToast("Please wait 5 minutes before submitting again.", "error");
     return false;
   }
   return true;
 }
 
-/* ── FILE TO BASE64 ── */
+/* ═══════════════════════════════
+   FILE TO BASE64
+═══════════════════════════════ */
 function fileToBase64(file) {
   return new Promise((res, rej) => {
     const r = new FileReader();
@@ -1044,7 +924,9 @@ function fileToBase64(file) {
   });
 }
 
-/* ── PDF EXPORT ── */
+/* ═══════════════════════════════
+   PDF EXPORT
+═══════════════════════════════ */
 async function generatePDF() {
   const f = document.getElementById("idnum");
   const orig = f.value;
@@ -1062,18 +944,26 @@ async function generatePDF() {
   }
 }
 
-/* ── SUCCESS HANDLER ── */
+/* ═══════════════════════════════
+   SUCCESS SCREEN
+═══════════════════════════════ */
 function showSuccess() {
   document.getElementById("successRef").innerText = reference;
   document.getElementById("successModal").style.display = "flex";
-  confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ["#00C16A","#00FF95","#FFB800","#ffffff"] });
-  document.getElementById("downloadPdfBtn").addEventListener("click", generatePDF, { once: true });
+  confetti({ particleCount: 220, spread: 100, origin: { y: 0.6 }, colors: ["#00C16A","#00FF95","#FFB800","#ffffff"] });
+  vibrate([80, 40, 80]);
+  document.getElementById("pdfBtn").onclick = () => generatePDF();
 }
 
-/* ── SUBMIT ── */
+/* ═══════════════════════════════
+   SUBMIT — LIVE API CALL
+═══════════════════════════════ */
 document.getElementById("submitBtn").addEventListener("click", async () => {
+
+  vibrate(40);
   if (!checkCooldown()) return;
 
+  // Collect values
   const fullname = sanitize(document.getElementById("fullname").value);
   const id = sanitize(document.getElementById("idnum").value);
   const phone = sanitize(document.getElementById("phone").value);
@@ -1085,24 +975,32 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   const amount = +slider.value;
   const repayment = calcLoan(amount);
 
-  if (!fullname || !id || !phone || !payday || !employer || !income || !bank || !account) {
-    alert("Please complete all required fields."); return;
-  }
-  if (!validateSAID(id)) { alert("Invalid South African ID number."); return; }
-  if (!validatePhone(phone)) { alert("Invalid South African phone number."); return; }
-  if (!validateAccount(account)) { alert("Invalid account number."); return; }
-  if (repayment > income * 0.30) { alert("Loan repayment exceeds 30% of your income (affordability limit)."); return; }
-  if (fileInput.files.length < 1) { alert("Please upload at least one supporting document."); return; }
-  if (signaturePad.isEmpty()) { alert("Please provide your signature."); return; }
-  if (!document.getElementById("consent").checked) { alert("Please accept the consent declaration."); return; }
+  // Validate
+  if (!fullname) { showToast("Enter your full name", "error"); return; }
+  if (!validateSAID(id)) { showToast("Invalid South African ID number", "error"); return; }
+  if (!validatePhone(phone)) { showToast("Invalid phone number", "error"); return; }
+  if (!payday) { showToast("Select your repayment date", "error"); return; }
+  if (!employer) { showToast("Enter your employer or income source", "error"); return; }
+  if (!income) { showToast("Enter your monthly income", "error"); return; }
+  if (!bank) { showToast("Select your bank", "error"); return; }
+  if (!validateAccount(account)) { showToast("Invalid account number", "error"); return; }
+  if (repayment > income * 0.30) { showToast("Loan exceeds 30% affordability limit", "error"); return; }
+  if (fileInput.files.length < 1) { showToast("Upload at least one document", "error"); return; }
+  if (signaturePad.isEmpty()) { showToast("Signature is required", "error"); return; }
+  if (!document.getElementById("consent").checked) { showToast("Please accept the consent declaration", "error"); return; }
 
+  // Show loading
   document.getElementById("loadingOverlay").style.display = "flex";
   document.getElementById("submitBtn").disabled = true;
 
   try {
+    // Convert files to base64
     const files = [];
-    for (const file of fileInput.files) files.push(await fileToBase64(file));
+    for (const file of fileInput.files) {
+      files.push(await fileToBase64(file));
+    }
 
+    // Build payload
     const payload = {
       timestamp: new Date().toISOString(),
       reference, fullname, id, phone,
@@ -1112,6 +1010,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       files
     };
 
+    // ✅ LIVE API CALL — sends to your Google Apps Script
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1119,21 +1018,26 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     });
 
     const result = await res.json();
+
     if (!result.success) throw new Error(result.error || "Submission failed");
 
+    // Success
     localStorage.setItem("5clipa_submit", Date.now());
     document.getElementById("loadingOverlay").style.display = "none";
     showSuccess();
 
   } catch (err) {
-    console.error(err);
+    console.error("Submit error:", err);
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("submitBtn").disabled = false;
-    // Still show success and offer PDF even if API has issues
-    const retry = confirm("Submission may have failed. Save a PDF copy and try again?\n\nError: " + (err.message || "Network error"));
-    if (retry) await generatePDF().catch(() => {});
+
+    // Offer PDF fallback if network/API issues
+    showToast("Submission issue — saving PDF copy", "error");
+    setTimeout(() => generatePDF().catch(() => {}), 800);
   }
+
 });
+
 </script>
 </body>
 </html>
