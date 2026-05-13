@@ -5,55 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apply • 5Clipa</title>
 
-<style>
-body{
-  font-family:Arial;
-  background:#0d1117;
-  color:white;
-  padding:30px;
-}
+<link rel="stylesheet" href="css/style.css">
 
-.container{
-  max-width:600px;
-  margin:auto;
-}
-
-input, select{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border:none;
-  border-radius:10px;
-  background:#161b22;
-  color:white;
-}
-
-button{
-  width:100%;
-  padding:15px;
-  margin-top:20px;
-  background:#00d084;
-  border:none;
-  border-radius:12px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.card{
-  background:#161b22;
-  padding:30px;
-  border-radius:20px;
-}
-</style>
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="card">
+<nav>
 
-<h1>Loan Application</h1>
+<div class="logo">
+5Clipa
+</div>
+
+<div class="nav-links">
+<a href="index.html">Home</a>
+<a href="apply.html">Apply</a>
+<a href="dashboard.html">Dashboard</a>
+</div>
+
+</nav>
+
+<section class="form-section">
+
+<div class="form-card">
+
+<h1>
+Loan Application
+</h1>
+
+<p class="form-text">
+Complete your application below.
+</p>
 
 <form id="loanForm">
 
@@ -72,7 +56,7 @@ button{
 <option>Contract Worker</option>
 </select>
 
-<button type="submit">
+<button type="submit" class="btn full-btn">
 Submit Application
 </button>
 
@@ -80,9 +64,26 @@ Submit Application
 
 </div>
 
+</section>
+
+<footer>
+
+<div class="footer-links">
+<a href="#">Privacy Policy</a>
+<a href="#">Terms</a>
+<a href="#">Contact</a>
+</div>
+
+<p>
+© 2026 5Clipa • All Rights Reserved
+</p>
+
+</footer>
+
 </div>
 
 <script>
+
 document
 .getElementById("loanForm")
 .addEventListener("submit", function(e){
@@ -92,6 +93,7 @@ e.preventDefault();
 alert("Application Submitted Successfully");
 
 });
+
 </script>
 
 </body>
