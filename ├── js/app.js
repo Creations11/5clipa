@@ -14,35 +14,63 @@ const phone =
 document.getElementById("phone").value;
 
 const income =
-document.getElementById("income").value;
+Number(document.getElementById("income").value);
 
 if(!validateSAID(idNumber)){
-  alert("Invalid ID Number");
-  return;
+
+alert("Invalid South African ID Number");
+
+return;
+
 }
 
 if(!validatePhone(phone)){
-  alert("Invalid Phone Number");
-  return;
+
+alert("Invalid Phone Number");
+
+return;
+
+}
+
+if(!validateIncome(income)){
+
+alert("Invalid Income");
+
+return;
+
 }
 
 const affordability =
-calculateAffordability(Number(income));
+calculateAffordability(income);
 
 const applicationData = {
-  fullName,
-  idNumber,
-  phone,
-  income,
-  affordability,
-  timestamp:new Date()
+
+fullName,
+idNumber,
+phone,
+income,
+affordability,
+timestamp:new Date()
+
 };
 
 console.log(applicationData);
 
+const result =
+await submitApplication(applicationData);
+
+if(result.success){
+
 alert(
-  "Estimated Qualification: R" +
-  affordability
+"Application Submitted Successfully"
 );
+
+}else{
+
+alert(
+"Submission Failed"
+);
+
+}
 
 });
