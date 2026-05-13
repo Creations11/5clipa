@@ -1,1 +1,45 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
+body{
+  font-family:Arial,sans-serif;
+  background:#0d1117;
+  color:white;
+  line-height:1.6;
+}
+
+.container{
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+}
+
+.btn{
+  background:#00d084;
+  color:#000;
+  padding:14px 22px;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.card{
+  background:#161b22;
+  border:1px solid #30363d;
+  border-radius:18px;
+  padding:25px;
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:10px;
+  background:#0d1117;
+  color:white;
+}
