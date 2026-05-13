@@ -126,7 +126,7 @@ Application Submitted Successfully
 
 <p>
 Reference Number:
-<strong>${result.reference}</strong>
+<strong>${result.reference || "Pending"}</strong>
 </p>
 
 <p>
