@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Apply • 5Clipa</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -20,9 +30,19 @@
 </div>
 
 <div class="nav-links">
-<a href="index.html">Home</a>
-<a href="apply.html">Apply</a>
-<a href="dashboard.html">Dashboard</a>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="apply.html">
+Apply
+</a>
+
+<a href="dashboard.html">
+Dashboard
+</a>
+
 </div>
 
 </nav>
@@ -31,36 +51,120 @@
 
 <div class="form-card">
 
+<div class="badge">
+Secure Loan Application
+</div>
+
 <h1>
 Loan Application
 </h1>
 
 <p class="form-text">
-Complete your application below.
+Complete your application below to begin your affordability assessment.
 </p>
 
 <form id="loanForm">
 
-<input type="text" placeholder="Full Name" required>
+<input
+id="fullName"
+type="text"
+placeholder="Full Name"
+required
+>
 
-<input type="text" placeholder="South African ID Number" required>
+<input
+id="idNumber"
+type="text"
+placeholder="South African ID Number"
+required
+>
 
-<input type="tel" placeholder="Phone Number" required>
+<input
+id="phone"
+type="tel"
+placeholder="Phone Number"
+required
+>
 
-<input type="number" placeholder="Monthly Income" required>
+<input
+id="income"
+type="number"
+placeholder="Monthly Income"
+required
+>
 
-<select required>
-<option value="">Employment Status</option>
-<option>Employed</option>
-<option>Self Employed</option>
-<option>Contract Worker</option>
+<input
+id="loanAmount"
+type="number"
+placeholder="Requested Loan Amount"
+required
+>
+
+<select
+id="employment"
+required
+>
+
+<option value="">
+Employment Status
+</option>
+
+<option>
+Employed
+</option>
+
+<option>
+Self Employed
+</option>
+
+<option>
+Contract Worker
+</option>
+
+<option>
+Unemployed
+</option>
+
 </select>
 
-<button type="submit" class="btn full-btn">
+<label class="checkbox-wrap">
+
+<input
+type="checkbox"
+required
+>
+
+<span>
+I consent to affordability checks and processing of my information.
+</span>
+
+</label>
+
+<button
+type="submit"
+class="btn full-btn"
+>
+
 Submit Application
+
 </button>
 
 </form>
+
+<div
+id="resultBox"
+class="result-box"
+style="display:none;"
+>
+
+<h3>
+Application Submitted
+</h3>
+
+<p id="resultText">
+</p>
+
+</div>
 
 </div>
 
@@ -69,9 +173,19 @@ Submit Application
 <footer>
 
 <div class="footer-links">
-<a href="#">Privacy Policy</a>
-<a href="#">Terms</a>
-<a href="#">Contact</a>
+
+<a href="#">
+Privacy Policy
+</a>
+
+<a href="#">
+Terms
+</a>
+
+<a href="#">
+Contact
+</a>
+
 </div>
 
 <p>
@@ -82,18 +196,103 @@ Submit Application
 
 </div>
 
+<script src="js/validation.js"></script>
+
+<script src="js/affordability.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/app.js"></script>
+
 <script>
 
 document
 .getElementById("loanForm")
-.addEventListener("submit", function(e){
+.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-alert("Application Submitted Successfully");
+const fullName =
+document.getElementById("fullName").value;
+
+const idNumber =
+document.getElementById("idNumber").value;
+
+const phone =
+document.getElementById("phone").value;
+
+const income =
+Number(
+document.getElementById("income").value
+);
+
+const loanAmount =
+Number(
+document.getElementById("loanAmount").value
+);
+
+const employment =
+document.getElementById("employment").value;
+
+if(!validateSAID(idNumber)){
+
+alert(
+"Invalid South African ID Number"
+);
+
+return;
+
+}
+
+if(!validatePhone(phone)){
+
+alert(
+"Invalid Phone Number"
+);
+
+return;
+
+}
+
+if(!validateIncome(income)){
+
+alert(
+"Invalid Income Amount"
+);
+
+return;
+
+}
+
+const affordability =
+calculateAffordability(income);
+
+const applicationData = {
+
+fullName,
+idNumber,
+phone,
+income,
+loanAmount,
+employment,
+affordability,
+timestamp:new Date()
+
+};
+
+console.log(applicationData);
+
+document
+.getElementById("resultBox")
+.style.display = "block";
+
+document
+.getElementById("resultText")
+.innerHTML =
+"Estimated Qualification: R" +
+affordability;
 
 });
-
 </script>
 
 </body>
