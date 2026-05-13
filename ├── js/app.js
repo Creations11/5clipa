@@ -28,7 +28,9 @@ document.getElementById("employment").value;
 
 if(!validateSAID(idNumber)){
 
-alert("Invalid South African ID Number");
+alert(
+"Invalid South African ID Number"
+);
 
 return;
 
@@ -36,7 +38,9 @@ return;
 
 if(!validatePhone(phone)){
 
-alert("Invalid Phone Number");
+alert(
+"Invalid Phone Number"
+);
 
 return;
 
@@ -44,7 +48,9 @@ return;
 
 if(!validateIncome(income)){
 
-alert("Invalid Income");
+alert(
+"Invalid Income"
+);
 
 return;
 
@@ -92,7 +98,7 @@ document
 }else{
 
 alert(
-"Submission failed. Please try again."
+"Submission failed"
 );
 
 }
