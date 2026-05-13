@@ -14,7 +14,17 @@ const phone =
 document.getElementById("phone").value;
 
 const income =
-Number(document.getElementById("income").value);
+Number(
+document.getElementById("income").value
+);
+
+const loanAmount =
+Number(
+document.getElementById("loanAmount").value
+);
+
+const employment =
+document.getElementById("employment").value;
 
 if(!validateSAID(idNumber)){
 
@@ -49,6 +59,8 @@ fullName,
 idNumber,
 phone,
 income,
+loanAmount,
+employment,
 affordability,
 timestamp:new Date()
 
@@ -61,14 +73,26 @@ await submitApplication(applicationData);
 
 if(result.success){
 
-alert(
-"Application Submitted Successfully"
-);
+document
+.getElementById("resultBox")
+.style.display = "block";
+
+document
+.getElementById("resultText")
+.innerHTML =
+"Reference: " +
+result.reference +
+"<br><br>Estimated Qualification: R" +
+affordability;
+
+document
+.getElementById("loanForm")
+.reset();
 
 }else{
 
 alert(
-"Submission Failed"
+"Submission failed. Please try again."
 );
 
 }
