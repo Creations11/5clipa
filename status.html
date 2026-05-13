@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Track Application • 5Clipa
+</title>
+
+<link rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<nav>
+
+<div class="logo">
+5Clipa
+</div>
+
+<div class="nav-links">
+
+<a href="index.html">
+Home
+</a>
+
+<a href="apply.html">
+Apply
+</a>
+
+<a href="status.html">
+Track Status
+</a>
+
+</div>
+
+</nav>
+
+<section class="form-section">
+
+<div class="form-card">
+
+<div class="badge">
+Application Tracking
+</div>
+
+<h1>
+Track Your Application
+</h1>
+
+<p class="form-text">
+Enter your reference number below.
+</p>
+
+<input
+type="text"
+id="referenceNumber"
+placeholder="5C-XXXXXXXX"
+>
+
+<button
+class="btn full-btn"
+onclick="trackApplication()"
+>
+
+Check Status
+
+</button>
+
+<div
+id="statusResult"
+style="display:none;margin-top:20px;"
+>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+<script>
+
+function trackApplication(){
+
+const reference =
+document
+.getElementById("referenceNumber")
+.value;
+
+const statusResult =
+document
+.getElementById("statusResult");
+
+if(reference === ""){
+
+statusResult.style.display = "block";
+
+statusResult.innerHTML = `
+
+<div class="error-card">
+
+<h3>
+Reference Required
+</h3>
+
+<p>
+Please enter your application reference number.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+/* TEMP DEMO STATUS */
+
+statusResult.style.display = "block";
+
+statusResult.innerHTML = `
+
+<div class="success-card">
+
+<h2>
+Application Found
+</h2>
+
+<p>
+Reference:
+<strong>${reference}</strong>
+</p>
+
+<p>
+Status:
+<strong>Pending Review</strong>
+</p>
+
+<p>
+Our team is currently reviewing your application.
+</p>
+
+</div>
+
+`;
+
+}
+
+</script>
+
+</body>
+
+</html>
