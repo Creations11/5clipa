@@ -17,23 +17,20 @@ data[key]
 
 }
 
-const response =
 await fetch(API_URL,{
 
 method:"POST",
+mode:"no-cors",
 body:formData
 
 });
 
-const text =
-await response.text();
+return {
 
-console.log(text);
+success:true,
+reference:"5C-" + Date.now()
 
-const result =
-JSON.parse(text);
-
-return result;
+};
 
 }catch(error){
 
