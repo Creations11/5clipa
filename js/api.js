@@ -18,15 +18,22 @@ body:JSON.stringify(data)
 
 });
 
+const text =
+await response.text();
+
+console.log("RAW RESPONSE:", text);
+
 const result =
-await response.json();
+JSON.parse(text);
+
+console.log("PARSED RESPONSE:", result);
 
 return result;
 
 }catch(error){
 
 console.error(
-"API Error:",
+"API ERROR:",
 error
 );
 
