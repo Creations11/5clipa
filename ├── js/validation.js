@@ -10,6 +10,20 @@ return /^\d+$/.test(idNumber);
 
 function validatePhone(phone){
 
-return phone.length >= 10;
+if(phone.length < 10){
+  return false;
+}
+
+return true;
+
+}
+
+function validateIncome(income){
+
+if(income <= 0){
+  return false;
+}
+
+return true;
 
 }
