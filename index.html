@@ -9,7 +9,7 @@
 content="width=device-width, initial-scale=1.0">
 
 <title>
-5Clipa • Fast Mobile Loans
+Apply • 5Clipa
 </title>
 
 <meta name="theme-color"
@@ -60,12 +60,160 @@ Track Status
 
 </nav>
 
-<!-- HERO SECTION -->
+<!-- APPLICATION SECTION -->
 
-<section class="hero">
+<section class="form-section">
+
+<div class="form-card">
 
 <div class="badge">
-Secure Mobile Loan Platform
+Secure Loan Application
 </div>
 
 <h1>
+Loan Application
+</h1>
+
+<p class="form-text">
+Complete your application below to begin your affordability assessment.
+</p>
+
+<form id="loanForm">
+
+<input
+id="fullName"
+type="text"
+placeholder="Full Name"
+required
+>
+
+<input
+id="idNumber"
+type="text"
+placeholder="South African ID Number"
+required
+>
+
+<input
+id="phone"
+type="tel"
+placeholder="Phone Number"
+required
+>
+
+<input
+id="income"
+type="number"
+placeholder="Monthly Income"
+required
+>
+
+<input
+id="loanAmount"
+type="number"
+placeholder="Requested Loan Amount"
+required
+>
+
+<select
+id="employment"
+required
+>
+
+<option value="">
+Employment Status
+</option>
+
+<option>
+Employed
+</option>
+
+<option>
+Self Employed
+</option>
+
+<option>
+Contract Worker
+</option>
+
+<option>
+Unemployed
+</option>
+
+</select>
+
+<label class="checkbox-wrap">
+
+<input
+type="checkbox"
+required
+>
+
+<span>
+I consent to affordability checks and processing of my information.
+</span>
+
+</label>
+
+<button
+type="submit"
+class="btn full-btn"
+>
+
+Submit Application
+
+</button>
+
+</form>
+
+<div
+id="resultBox"
+style="display:none;margin-top:20px;"
+>
+
+<div id="resultText"></div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+<div class="footer-links">
+
+<a href="#">
+Privacy Policy
+</a>
+
+<a href="#">
+Terms
+</a>
+
+<a href="#">
+Contact
+</a>
+
+</div>
+
+<p>
+© 2026 5Clipa • All Rights Reserved
+</p>
+
+</footer>
+
+</div>
+
+<!-- JAVASCRIPT -->
+
+<script src="js/validation.js"></script>
+<script src="js/affordability.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
